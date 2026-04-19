@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNL S51 Sketch Tracker</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a1a; min-height: 100vh; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+.sidebar { width: 240px; background: #1a1a1a; color: #e8e6df; display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+.sidebar-header { padding: 18px 18px 14px; border-bottom: 1px solid #2d2d2d; }
+.sidebar-logo { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #555; }
+.sidebar-title { font-size: 17px; font-weight: 700; color: #f0ede6; margin-top: 4px; letter-spacing: -0.02em; }
+.sidebar-sub { font-size: 11px; color: #555; margin-top: 2px; }
+.ep-list { overflow-y: auto; flex: 1; }
+.ep-item { padding: 10px 18px; cursor: pointer; border-bottom: 1px solid #222; transition: background 0.1s; }
+.ep-item:hover { background: #242424; }
+.ep-item.active { background: #2a2a2a; border-left: 3px solid #e8c84a; padding-left: 15px; }
+.ep-num { font-size: 10px; color: #4a4a4a; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.ep-host { font-size: 13px; font-weight: 600; color: #e8e6df; margin-top: 2px; }
+.ep-date { font-size: 11px; color: #555; margin-top: 1px; }
+.ep-stats { font-size: 10px; color: #4a4a4a; margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap; }
+.ep-stats .rated { color: #888; }
+.ep-stats .favs { color: #e8c84a; }
+
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.main-header { background: #fff; border-bottom: 1px solid #e8e4dc; padding: 14px 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-shrink: 0; }
+.main-title h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; color: #1a1a1a; }
+.main-title p { font-size: 12px; color: #999; margin-top: 3px; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+.view-tabs { display: flex; gap: 4px; }
+.view-tab { font-size: 11px; font-weight: 600; padding: 5px 13px; border-radius: 20px; border: 1px solid #ddd; background: transparent; color: #999; cursor: pointer; transition: all 0.15s; }
+.view-tab.active { background: #1a1a1a; color: #f0ede6; border-color: #1a1a1a; }
+.view-tab:hover:not(.active) { border-color: #bbb; color: #444; }
+.rating-legend { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.legend-item { font-size: 10px; color: #bbb; white-space: nowrap; }
+.legend-item span { color: #e8c84a; }
+
+.sketches-area { flex: 1; overflow-y: auto; padding: 14px 24px 20px; }
+.sketch-card { background: #fff; border: 1px solid #e8e4dc; border-radius: 10px; padding: 11px 15px; margin-bottom: 7px; transition: box-shadow 0.1s; }
+.sketch-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.sketch-card.rated-5 { border-left: 3px solid #e8c84a; }
+.sketch-card.rated-4 { border-left: 3px solid #a0c878; }
+.sketch-top { display: flex; align-items: center; gap: 8px; }
+.sketch-order { font-size: 10px; color: #ccc; font-weight: 600; width: 16px; flex-shrink: 0; }
+.sketch-title-input { font-size: 14px; font-weight: 600; color: #1a1a1a; background: transparent; border: none; outline: none; flex: 1; font-family: inherit; min-width: 0; }
+.sketch-title-input::placeholder { color: #ccc; font-weight: 400; }
+.fav-btn { background: none; border: none; cursor: pointer; font-size: 15px; color: #ddd; padding: 0 1px; line-height: 1; transition: color 0.1s; flex-shrink: 0; }
+.fav-btn.active { color: #e8c84a; }
+.fav-btn:hover { color: #e8c84a; }
+.del-btn { background: none; border: none; cursor: pointer; font-size: 11px; color: #ddd; padding: 2px 5px; border-radius: 4px; transition: all 0.1s; flex-shrink: 0; }
+.del-btn:hover { background: #fee; color: #c00; }
+.sketch-row2 { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.stars { display: flex; gap: 1px; }
+.star { font-size: 16px; cursor: pointer; color: #e8e2d8; line-height: 1; transition: color 0.1s; }
+.star.lit { color: #e8c84a; }
+.star:hover { color: #e8c84a; }
+.rating-label { font-size: 10px; color: #bbb; font-style: italic; }
+.cat-select { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; border: 1px solid #e0ddd6; background: #f8f7f3; color: #888; font-family: inherit; cursor: pointer; }
+.fav-badge { font-size: 10px; background: #fffbea; color: #b8860b; border: 1px solid #f0d060; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+.sketch-fields { margin-top: 7px; display: flex; flex-direction: column; gap: 3px; }
+.sketch-field { display: flex; align-items: baseline; gap: 6px; }
+.field-label { font-size: 10px; color: #ccc; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; flex-shrink: 0; width: 34px; }
+.sketch-input-sm { font-size: 12px; color: #555; background: transparent; border: none; outline: none; flex: 1; font-family: inherit; border-bottom: 1px solid transparent; padding: 1px 0; }
+.sketch-input-sm:focus { border-bottom-color: #e0ddd6; color: #333; }
+.sketch-input-sm::placeholder { color: #ddd; }
+.sketch-summary { font-size: 11px; color: #aaa; margin-top: 6px; line-height: 1.5; font-style: italic; border-top: 1px solid #f5f2ee; padding-top: 6px; }
+
+.add-sketch { margin-top: 6px; }
+.add-btn { font-size: 13px; color: #aaa; background: transparent; border: 1px dashed #d8d4cc; border-radius: 10px; padding: 10px 16px; width: 100%; text-align: left; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.add-btn:hover { border-color: #bbb; color: #666; background: #fff; }
+.add-form { background: #fff; border: 1px solid #d0cdc5; border-radius: 10px; padding: 14px 16px; }
+.add-form label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; display: block; margin-bottom: 4px; }
+.add-form input, .add-form select, .add-form textarea { font-size: 13px; width: 100%; background: #f8f7f3; border: 1px solid #e0ddd6; border-radius: 8px; padding: 7px 11px; color: #1a1a1a; font-family: inherit; margin-bottom: 10px; outline: none; }
+.add-form input:focus, .add-form select:focus, .add-form textarea:focus { border-color: #aaa; }
+.add-form textarea { resize: vertical; min-height: 52px; font-size: 12px; line-height: 1.5; }
+.form-btns { display: flex; gap: 8px; margin-top: 2px; }
+.btn-save { font-size: 12px; font-weight: 700; padding: 7px 18px; background: #1a1a1a; color: #f0ede6; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
+.btn-save:hover { background: #333; }
+.btn-cancel { font-size: 12px; padding: 7px 14px; background: transparent; color: #888; border: 1px solid #d0cdc5; border-radius: 8px; cursor: pointer; font-family: inherit; }
+
+.ranked-area { flex: 1; overflow-y: auto; padding: 14px 24px 20px; }
+.ranked-empty { text-align: center; padding: 60px 20px; }
+.ranked-empty .icon { font-size: 36px; color: #ddd; margin-bottom: 12px; }
+.ranked-empty p { font-size: 14px; color: #888; margin-bottom: 6px; }
+.ranked-empty small { font-size: 12px; color: #bbb; }
+.rank-item { display: flex; align-items: flex-start; gap: 14px; padding: 11px 16px; background: #fff; border: 1px solid #e8e4dc; border-radius: 10px; margin-bottom: 6px; }
+.rank-item.top3 { border-left: 3px solid #e8c84a; }
+.rank-num { font-size: 14px; font-weight: 700; color: #ddd; width: 22px; text-align: right; flex-shrink: 0; padding-top: 1px; }
+.rank-num.gold { color: #e8c84a; }
+.rank-num.silver { color: #b0b0b0; }
+.rank-num.bronze { color: #cd7f32; }
+.rank-info { flex: 1; min-width: 0; }
+.rank-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+.rank-ep { font-size: 11px; color: #999; margin-top: 2px; }
+.rank-cast { font-size: 11px; color: #bbb; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rank-notes { font-size: 11px; color: #aaa; font-style: italic; margin-top: 3px; }
+.rank-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.rank-stars { font-size: 13px; color: #e8c84a; }
+.rank-fav { font-size: 11px; color: #e8c84a; font-weight: 600; }
+.rank-cat { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+.rank-cat.cold { background: #e6f1fb; color: #185fa5; }
+.rank-cat.pre { background: #eaf3de; color: #3b6d11; }
+.rank-cat.update { background: #faeeda; color: #854f0b; }
+.rank-cat.musical { background: #fbeaf0; color: #993556; }
+.rank-cat.live { background: #f1efff; color: #534ab7; }
+
+.empty-main { text-align: center; padding: 80px 20px; color: #ccc; font-size: 14px; }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+.sidebar ::-webkit-scrollbar-thumb { background: #333; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Saturday Night Live</div>
+      <div class="sidebar-title">Season 51 Tracker</div>
+      <div class="sidebar-sub">2025–26</div>
+    </div>
+    <div class="ep-list" id="ep-list"></div>
+  </div>
+  <div class="main">
+    <div class="main-header">
+      <div class="main-title">
+        <h2 id="main-title">Select an episode</h2>
+        <p id="main-sub"></p>
+      </div>
+      <div class="header-right">
+        <div class="view-tabs">
+          <button class="view-tab active" onclick="setView('episode')">Episode</button>
+          <button class="view-tab" onclick="setView('ranked')">Best of ★</button>
+        </div>
+        <div class="rating-legend">
+          <div class="legend-item"><span>★</span> Offensive</div>
+          <div class="legend-item"><span>★★</span> Weak</div>
+          <div class="legend-item"><span>★★★</span> Pretty good</div>
+          <div class="legend-item"><span>★★★★</span> Really good</div>
+          <div class="legend-item"><span>★★★★★</span> Classic</div>
+        </div>
+      </div>
+    </div>
+    <div id="content-area" style="flex:1;overflow:hidden;display:flex;flex-direction:column;"></div>
+  </div>
+</div>
+
+<script>
+const CATS = { cold:'Cold Open', pre:'Pre-tape', update:'Weekend Update', musical:'Musical Performance', live:'Live Sketch' };
+const RATING_LABELS = { 0:'', 1:'Downright offensive', 2:'Below average', 3:'Pretty good — nothing special', 4:'Really good — short of the pantheon', 5:'Outright classic' };
+
+const BASE_EPISODES = [
+  { id:'ep1', ep:'S51E01', date:'Oct 4, 2025', host:'Bad Bunny', musical:'Doja Cat', sketches:[
+    { id:'s1_1', title:'Pete Hegseth Cold Open', cat:'cold', cast:'Colin Jost, James Austin Johnson, Mikey Day, Jeremy Culhane', notes:'', rating:0, fav:false, summary:'Pete Hegseth (Colin Jost) gives an address to military officials before being interrupted by Trump (James Austin Johnson).' },
+    { id:'s1_2', title:'Opening Montage', cat:'pre', cast:'Full cast', notes:'', rating:0, fav:false, summary:'Updated S51 credits; SNL50 anniversary branding stripped. First credits for Brennan, Culhane, Marshall, Patterson, Slowikowska.' },
+    { id:'s1_3', title:'Monologue', cat:'live', cast:'Bad Bunny, Marcello Hernandez, Jon Hamm', notes:'', rating:0, fav:false, summary:'Bad Bunny discusses Happy Gilmore 2, his Puerto Rico residency, and the Super Bowl Halftime Show, then auditions for new roles.' },
+    { id:'s1_4', title:'Jeopardy with Bad Bunny', cat:'live', cast:'Bad Bunny, Kenan Thompson, Veronika Slowikowska, Andrew Dismukes', notes:'', rating:0, fav:false, summary:'A contestant (Bad Bunny) has trouble understanding the rules of Jeopardy. First appearance of Veronika Slowikowska.' },
+    { id:'s1_5', title:'ChatGPTio', cat:'pre', cast:'Chloe Fineman, Veronika Slowikowska, Tommy Brennan, Mikey Day, Ben Marshall, Jeremy Culhane, Marcello Hernandez, Bad Bunny', notes:'', rating:0, fav:false, summary:'Commercial for a more "authentic" version of ChatGPT. First appearances of Tommy Brennan and Ben Marshall.' },
+    { id:'s1_6', title:'The Donor', cat:'live', cast:'Chloe Fineman, Sarah Sherman, Andrew Dismukes, Bad Bunny, Kenan Thompson, Marcello Hernandez, Bowen Yang', notes:'', rating:0, fav:false, summary:'A couple (Fineman, Sherman) asks their friend (Dismukes) to be their sperm donor.' },
+    { id:'s1_7', title:'K-Pop Demon Hunters Brunch', cat:'live', cast:'Bad Bunny, Mikey Day, Sarah Sherman, Chloe Fineman, Bowen Yang, HUNTR/X', notes:'Longest sketch at 5m 48s', rating:0, fav:false, summary:'A group of adults talk about K-Pop Demon Hunters. Cameo by HUNTR/X (EJAE, Audrey Nuna, Rei Ami).' },
+    { id:'s1_8', title:'Doja Cat: "AAAHH MEN!"', cat:'musical', cast:'Doja Cat', notes:'', rating:0, fav:false, summary:'1980s-inspired neon theme with black-and-white checkered floor.' },
+    { id:'s1_9', title:'Weekend Update', cat:'update', cast:'Colin Jost, Michael Che, Kam Patterson, Bowen Yang', notes:'', rating:0, fav:false, summary:"Kam Patterson debuts (discusses the slur he can't say on air). Bowen Yang as Dobby the House Elf on J.K. Rowling. First WU appearance for Patterson." },
+    { id:'s1_10', title:'Inventing Spanish', cat:'live', cast:'Bad Bunny, Marcello Hernández, Kenan Thompson, Mikey Day, James Austin Johnson, Andrew Dismukes, Tommy Brennan, Jeremy Culhane, Kam Patterson, Ben Marshall, Benicio del Toro', notes:'', rating:0, fav:false, summary:'A group of men invent the Spanish language. Cameo by Benicio del Toro.' },
+    { id:'s1_11', title:'Doja Cat: "Gorgeous"', cat:'musical', cast:'Doja Cat', notes:'', rating:0, fav:false, summary:'Moody rendition featuring Doja Cat seated on a giant rose bloom prop.' },
+    { id:'s1_12', title:'Parent Teacher Conference', cat:'live', cast:'Bad Bunny, Marcello Hernández, Ashley Padilla, Andrew Dismukes', notes:'', rating:0, fav:false, summary:"Unexpected chaos when a student's (Hernández) very hot dad (Bad Bunny) shows up to a parent teacher conference." },
+    { id:'s1_13', title:'The Kid From Number Eight', cat:'live', cast:'Bad Bunny, Marcello Hernandez, Kenan Thompson, Andrew Dismukes, Sarah Sherman, Chloe Fineman, Jon Hamm', notes:'', rating:0, fav:false, summary:'Bad Bunny guides the cast through an English-language version of El Chavo Del Ocho. Cameo by Jon Hamm.' },
+    { id:'s1_14', title:'Goodnights', cat:'live', cast:'Full cast', notes:'', rating:0, fav:false, summary:'Bad Bunny thanks the cast in English and Spanish. Cast spotlights the five new featured players.' },
+  ]},
+  { id:'ep2', ep:'S51E02', date:'Oct 11, 2025', host:'Amy Poehler', musical:'Role Model', sketches:[] },
+  { id:'ep3', ep:'S51E03', date:'Oct 18, 2025', host:'Sabrina Carpenter', musical:'Sabrina Carpenter', sketches:[] },
+  { id:'ep4', ep:'S51E04', date:'Nov 1, 2025', host:'Miles Teller', musical:'Brandi Carlile', sketches:[] },
+  { id:'ep5', ep:'S51E05', date:'Nov 8, 2025', host:'Nikki Glaser', musical:'sombr', sketches:[] },
+  { id:'ep6', ep:'S51E06', date:'Nov 15, 2025', host:'Glen Powell', musical:'Olivia Dean', sketches:[] },
+  { id:'ep7', ep:'S51E07', date:'Dec 6, 2025', host:'Melissa McCarthy', musical:'Dijon', sketches:[] },
+  { id:'ep8', ep:'S51E08', date:'Dec 13, 2025', host:"Josh O'Connor", musical:'Lily Allen', sketches:[] },
+  { id:'ep9', ep:'S51E09', date:'Dec 20, 2025', host:'Ariana Grande', musical:'Cher', sketches:[] },
+  { id:'ep10', ep:'S51E10', date:'Jan 17, 2026', host:'Finn Wolfhard', musical:'A$AP Rocky', sketches:[] },
+  { id:'ep11', ep:'S51E11', date:'Jan 24, 2026', host:'Teyana Taylor', musical:'Geese', sketches:[] },
+  { id:'ep12', ep:'S51E12 (#1000)', date:'Jan 31, 2026', host:'Alexander Skarsgård', musical:'Cardi B', sketches:[] },
+  { id:'ep13', ep:'S51E13', date:'Feb 28, 2026', host:'Connor Storrie', musical:'Mumford & Sons', sketches:[] },
+  { id:'ep14', ep:'S51E14', date:'Mar 7, 2026', host:'Ryan Gosling', musical:'Gorillaz', sketches:[] },
+  { id:'ep15', ep:'S51E15', date:'Mar 14, 2026', host:'Harry Styles', musical:'Harry Styles', sketches:[] },
+];
+
+let episodes = JSON.parse(JSON.stringify(BASE_EPISODES));
+let activeEpId = 'ep1';
+let currentView = 'episode';
+let showAddForm = false;
+
+function loadData() {
+  try { const s = localStorage.getItem('snl51_v2'); if (s) episodes = JSON.parse(s); } catch(e) {}
+}
+function saveData() {
+  try { localStorage.setItem('snl51_v2', JSON.stringify(episodes)); } catch(e) {}
+}
+function getEp() { return episodes.find(e => e.id === activeEpId); }
+
+function setView(v) {
+  currentView = v;
+  document.querySelectorAll('.view-tab').forEach(t => {
+    t.classList.toggle('active', (v==='episode' && t.textContent.includes('Episode')) || (v==='ranked' && t.textContent.includes('Best')));
+  });
+  v === 'ranked' ? renderRanked() : renderEpisode();
+}
+
+function selectEp(id) {
+  activeEpId = id;
+  showAddForm = false;
+  if (currentView !== 'ranked') {
+    document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.textContent.includes('Episode')));
+    currentView = 'episode';
+  }
+  renderSidebar();
+  currentView === 'ranked' ? renderRanked() : renderEpisode();
+}
+
+function renderSidebar() {
+  document.getElementById('ep-list').innerHTML = episodes.map(ep => {
+    const rated = ep.sketches.filter(s => s.rating > 0).length;
+    const favs = ep.sketches.filter(s => s.fav).length;
+    const total = ep.sketches.length;
+    let stats = total > 0 ? `<span>${total} sketches</span>` : `<span style="color:#333">No sketches yet</span>`;
+    if (rated) stats += `<span class="rated">${rated} rated</span>`;
+    if (favs) stats += `<span class="favs">♥ ${favs}</span>`;
+    return `<div class="ep-item ${ep.id===activeEpId?'active':''}" onclick="selectEp('${ep.id}')">
+      <div class="ep-num">${ep.ep}</div>
+      <div class="ep-host">${escHtml(ep.host)}</div>
+      <div class="ep-date">${ep.date}</div>
+      <div class="ep-stats">${stats}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderEpisode() {
+  const content = document.getElementById('content-area');
+  const ep = getEp();
+  if (!ep) { content.innerHTML = '<div class="empty-main">← Choose an episode</div>'; return; }
+  document.getElementById('main-title').textContent = ep.host;
+  document.getElementById('main-sub').textContent = `${ep.ep} · ${ep.date} · Musical guest: ${ep.musical}`;
+
+  const cards = ep.sketches.map((s, i) => {
+    const rc = s.rating === 5 ? 'rated-5' : s.rating === 4 ? 'rated-4' : '';
+    return `<div class="sketch-card ${rc}">
+      <div class="sketch-top">
+        <span class="sketch-order">${i+1}</span>
+        <input class="sketch-title-input" value="${escHtml(s.title)}" onchange="updateField('${ep.id}','${s.id}','title',this.value)" placeholder="Sketch title" />
+        <button class="fav-btn ${s.fav?'active':''}" onclick="toggleFav('${ep.id}','${s.id}')" title="Favorite">♥</button>
+        <button class="del-btn" onclick="deleteSketch('${ep.id}','${s.id}')">✕</button>
+      </div>
+      <div class="sketch-row2">
+        <div class="stars">${[1,2,3,4,5].map(n=>`<span class="star ${s.rating>=n?'lit':''}" onclick="setRating('${ep.id}','${s.id}',${n})">★</span>`).join('')}</div>
+        <span class="rating-label">${RATING_LABELS[s.rating]}</span>
+        <select class="cat-select" onchange="updateField('${ep.id}','${s.id}','cat',this.value)">
+          ${Object.entries(CATS).map(([k,v])=>`<option value="${k}" ${s.cat===k?'selected':''}>${v}</option>`).join('')}
+        </select>
+        ${s.fav?'<span class="fav-badge">♥ Fave</span>':''}
+      </div>
+      <div class="sketch-fields">
+        <div class="sketch-field">
+          <span class="field-label">Cast</span>
+          <input class="sketch-input-sm" value="${escHtml(s.cast)}" onchange="updateField('${ep.id}','${s.id}','cast',this.value)" placeholder="Cast members featured…" />
+        </div>
+        <div class="sketch-field">
+          <span class="field-label">Notes</span>
+          <input class="sketch-input-sm" value="${escHtml(s.notes)}" onchange="updateField('${ep.id}','${s.id}','notes',this.value)" placeholder="Your notes…" />
+        </div>
+      </div>
+      ${s.summary?`<div class="sketch-summary">${escHtml(s.summary)}</div>`:''}
+    </div>`;
+  }).join('');
+
+  const addHtml = showAddForm ? `<div class="add-form">
+    <label>Sketch title</label>
+    <input id="new-title" placeholder="e.g. Weekend Update" />
+    <label>Category</label>
+    <select id="new-cat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select>
+    <label>Cast members</label>
+    <input id="new-cast" placeholder="e.g. Kenan Thompson, Mikey Day" />
+    <label>Summary / Notes</label>
+    <textarea id="new-summary" placeholder="Brief description or your notes…"></textarea>
+    <div class="form-btns">
+      <button class="btn-save" onclick="addSketch('${ep.id}')">Add sketch</button>
+      <button class="btn-cancel" onclick="cancelAdd()">Cancel</button>
+    </div>
+  </div>` : `<button class="add-btn" onclick="showAdd()">+ Add sketch</button>`;
+
+  const emptyMsg = ep.sketches.length === 0 ? '<div style="text-align:center;padding:40px 0;color:#ccc;font-size:13px;">No sketches yet — add them below</div>' : '';
+  content.innerHTML = `<div class="sketches-area">${emptyMsg}${cards}<div class="add-sketch">${addHtml}</div></div>`;
+  if (showAddForm) setTimeout(() => { const t = document.getElementById('new-title'); if(t) t.focus(); }, 30);
+}
+
+function renderRanked() {
+  const content = document.getElementById('content-area');
+  document.getElementById('main-title').textContent = 'Best of Season 51';
+  document.getElementById('main-sub').textContent = 'All rated & favorited sketches ranked';
+
+  const all = [];
+  episodes.forEach(ep => ep.sketches.forEach(s => { if (s.rating > 0 || s.fav) all.push({...s, epHost:ep.host, epDate:ep.date, epNum:ep.ep}); }));
+  all.sort((a,b) => (b.rating-a.rating) || (b.fav-a.fav) || a.title.localeCompare(b.title));
+
+  if (!all.length) {
+    content.innerHTML = `<div class="ranked-area"><div class="ranked-empty"><div class="icon">★</div><p>No rated sketches yet</p><small>Go to an episode and rate some sketches — they'll appear here ranked</small></div></div>`;
+    return;
+  }
+
+  const numCls = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
+  const html = all.map((s,i)=>`<div class="rank-item ${i<3?'top3':''}">
+    <div class="rank-num ${numCls(i)}">${i+1}</div>
+    <div class="rank-info">
+      <div class="rank-title">${escHtml(s.title)}</div>
+      <div class="rank-ep">${s.epNum} · ${s.epDate} · ${s.epHost}</div>
+      ${s.cast?`<div class="rank-cast">${escHtml(s.cast)}</div>`:''}
+      ${s.notes?`<div class="rank-notes">"${escHtml(s.notes)}"</div>`:''}
+    </div>
+    <div class="rank-right">
+      <div class="rank-stars">${'★'.repeat(s.rating)}</div>
+      ${s.fav?'<div class="rank-fav">♥ Fave</div>':''}
+      <span class="rank-cat ${s.cat}">${CATS[s.cat]||s.cat}</span>
+    </div>
+  </div>`).join('');
+
+  content.innerHTML = `<div class="ranked-area">${html}</div>`;
+}
+
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function updateField(epId, sId, field, val) {
+  const s = episodes.find(e=>e.id===epId).sketches.find(s=>s.id===sId);
+  s[field] = val; saveData(); renderSidebar();
+  if (currentView==='ranked') renderRanked();
+}
+
+function setRating(epId, sId, rating) {
+  const s = episodes.find(e=>e.id===epId).sketches.find(s=>s.id===sId);
+  s.rating = s.rating===rating ? 0 : rating;
+  saveData(); renderSidebar(); renderEpisode();
+}
+
+function toggleFav(epId, sId) {
+  const s = episodes.find(e=>e.id===epId).sketches.find(s=>s.id===sId);
+  s.fav = !s.fav; saveData(); renderSidebar(); renderEpisode();
+}
+
+function deleteSketch(epId, sId) {
+  if (!confirm('Remove this sketch?')) return;
+  const ep = episodes.find(e=>e.id===epId);
+  ep.sketches = ep.sketches.filter(s=>s.id!==sId);
+  saveData(); renderSidebar(); renderEpisode();
+}
+
+function showAdd() { showAddForm = true; renderEpisode(); }
+function cancelAdd() { showAddForm = false; renderEpisode(); }
+
+function addSketch(epId) {
+  const title = (document.getElementById('new-title').value||'').trim();
+  if (!title) { document.getElementById('new-title').focus(); return; }
+  const ep = episodes.find(e=>e.id===epId);
+  ep.sketches.push({ id:'sk_'+Date.now(), title, cat:document.getElementById('new-cat').value, cast:document.getElementById('new-cast').value, notes:'', summary:document.getElementById('new-summary').value, rating:0, fav:false });
+  showAddForm = false; saveData(); renderSidebar(); renderEpisode();
+}
+
+loadData(); renderSidebar(); renderEpisode();
+</script>
+</body>
+</html>
