@@ -131,6 +131,61 @@ input, textarea, select { font: inherit; color: inherit; }
   border-bottom: 1px solid var(--ink-4);
 }
 
+/* ========== SIDEBAR FOOTER: Colophon / Export-Import ========== */
+.sidebar-footer {
+  flex-shrink: 0;
+  padding: 14px 22px 18px;
+  border-top: 3px double var(--rule);
+  background: var(--paper-2);
+}
+.footer-label {
+  font-family: var(--f-meta);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.footer-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.footer-btn {
+  flex: 1;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 8px 8px;
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: background 0.15s, color 0.15s;
+}
+.footer-btn:hover { background: var(--ink); color: var(--paper); }
+.footer-btn-glyph {
+  font-family: var(--f-display);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 400;
+}
+.footer-note {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 11px;
+  color: var(--ink-3);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
 .ep-item {
   padding: 14px 22px;
   cursor: pointer;
@@ -1264,6 +1319,18 @@ input, textarea, select { font: inherit; color: inherit; }
       <div class="sidebar-years">MMXXV — MMXXVI</div>
     </div>
     <nav class="ep-list" id="ep-list"></nav>
+    <div class="sidebar-footer">
+      <div class="footer-label">Colophon</div>
+      <div class="footer-actions">
+        <button class="footer-btn" onclick="exportData()" title="Download your ratings as a JSON file">
+          <span class="footer-btn-glyph">↓</span> Export ratings
+        </button>
+        <button class="footer-btn" onclick="importData()" title="Load a previously exported JSON file">
+          <span class="footer-btn-glyph">↑</span> Import
+        </button>
+      </div>
+      <div class="footer-note">Saved locally · no backend yet</div>
+    </div>
   </aside>
   <div class="sidebar-overlay" onclick="toggleSidebar(false)" aria-hidden="true"></div>
   <main class="main">
@@ -1637,6 +1704,70 @@ function toggleSidebar(forceState) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.body.classList.contains('sidebar-open')) toggleSidebar(false);
 });
+
+// ======================================================================
+// EXPORT / IMPORT — interim save-file workflow before a backend exists.
+// Exports the full episodes array (ratings, favourites, cast edits, notes)
+// as a single JSON file. Import overwrites local data after confirmation.
+// ======================================================================
+function exportData() {
+  const payload = {
+    app: 'snl-season-51-tracker',
+    version: 3,
+    exportedAt: new Date().toISOString(),
+    episodes: episodes
+  };
+  const json = JSON.stringify(payload, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const stamp = new Date().toISOString().slice(0, 10);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `snl-s51-ratings-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json,.json';
+  input.style.display = 'none';
+  input.onchange = async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      // Accept both {episodes: [...]} (new) and a bare episodes array (lenient)
+      const eps = Array.isArray(parsed) ? parsed : parsed.episodes;
+      if (!Array.isArray(eps) || !eps.length) {
+        alert('That file does not look like an SNL tracker export.');
+        return;
+      }
+      const totalSketches = eps.reduce((n, ep) => n + (ep.sketches ? ep.sketches.length : 0), 0);
+      const ok = confirm(
+        `Import ${eps.length} episodes (${totalSketches} sketches)?\n\n` +
+        `This will OVERWRITE your current ratings, favourites, and notes. ` +
+        `Consider exporting first if you want a backup.`
+      );
+      if (!ok) return;
+      episodes = eps;
+      if (!episodes.find(e => e.id === activeEpId)) activeEpId = episodes[0] && episodes[0].id;
+      saveData();
+      renderSidebar();
+      currentView === 'ranked' ? renderRanked() : renderEpisode();
+    } catch (err) {
+      alert('Could not read that file: ' + err.message);
+    } finally {
+      document.body.removeChild(input);
+    }
+  };
+  document.body.appendChild(input);
+  input.click();
+}
 
 // Running score for an episode: sum of ratings on non-musical sketches.
 function episodeScore(ep) {
