@@ -3,149 +3,1295 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SNL S51 Sketch Tracker</title>
+<title>SNL · Season 51 — A Running Catalogue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..900,0..100,0..1;1,9..144,400..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Archivo+Narrow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* =========================================================================
+   SNL Season 51 Tracker — editorial magazine redesign
+   Typography: Fraunces (display), Newsreader (body), Archivo Narrow (meta)
+   ========================================================================= */
+
+:root {
+  --ink:        #1a1410;
+  --ink-2:      #3a2d24;
+  --ink-3:      #6b5a4c;
+  --ink-4:      #a89b8a;
+  --paper:      #f3ead7;
+  --paper-2:    #ebe0c6;
+  --paper-3:    #e3d5b5;
+  --rule:       #1a1410;
+  --accent:     #d63a1f;
+  --accent-2:   #b82d14;
+  --accent-soft:#f7ddd4;
+  --mustard:    #d99b1e;
+  --mustard-soft:#f5e4b8;
+  --cobalt:     #1e3a8a;
+  --cobalt-soft:#d7dff0;
+  --plum:       #7d3a52;
+  --plum-soft:  #ead4de;
+  --sage:       #4f6b3a;
+  --sage-soft:  #dde6cd;
+
+  --f-display:  'Fraunces', 'Didot', 'Bodoni 72', Georgia, serif;
+  --f-body:     'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --f-meta:     'Archivo Narrow', 'Oswald', 'Arial Narrow', sans-serif;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a1a; min-height: 100vh; }
+
+html, body { height: 100%; }
+body {
+  font-family: var(--f-body);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.55;
+  font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button { font: inherit; color: inherit; }
+input, textarea, select { font: inherit; color: inherit; }
+
 .app { display: flex; height: 100vh; overflow: hidden; }
 
-.sidebar { width: 240px; background: #1a1a1a; color: #e8e6df; display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
-.sidebar-header { padding: 18px 18px 14px; border-bottom: 1px solid #2d2d2d; }
-.sidebar-logo { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #555; }
-.sidebar-title { font-size: 17px; font-weight: 700; color: #f0ede6; margin-top: 4px; letter-spacing: -0.02em; }
-.sidebar-sub { font-size: 11px; color: #555; margin-top: 2px; }
+/* ========== SIDEBAR: the Table of Contents ========== */
+.sidebar {
+  width: 300px;
+  background: var(--paper-2);
+  color: var(--ink);
+  border-right: 2px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sidebar-header {
+  padding: 26px 22px 18px;
+  border-bottom: 4px double var(--rule);
+  text-align: center;
+  background: var(--paper-2);
+  position: relative;
+}
+.sidebar-masthead {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 60px;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+}
+.sidebar-masthead .amp {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+  padding: 0 2px;
+}
+.sidebar-kicker {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.sidebar-dek {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-2);
+  margin-top: 8px;
+  letter-spacing: 0.01em;
+}
+.sidebar-years {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+
 .ep-list { overflow-y: auto; flex: 1; }
-.ep-item { padding: 10px 18px; cursor: pointer; border-bottom: 1px solid #222; transition: background 0.1s; }
-.ep-item:hover { background: #242424; }
-.ep-item.active { background: #2a2a2a; border-left: 3px solid #e8c84a; padding-left: 15px; }
-.ep-num { font-size: 10px; color: #4a4a4a; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-.ep-host { font-size: 13px; font-weight: 600; color: #e8e6df; margin-top: 2px; }
-.ep-date { font-size: 11px; color: #555; margin-top: 1px; }
-.ep-stats { font-size: 10px; color: #4a4a4a; margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap; }
-.ep-stats .rated { color: #888; }
-.ep-stats .favs { color: #e8c84a; }
+.ep-list::before {
+  content: 'The Episodes';
+  display: block;
+  font-family: var(--f-meta);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 14px 22px 10px;
+  border-bottom: 1px solid var(--ink-4);
+}
 
-.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.main-header { background: #fff; border-bottom: 1px solid #e8e4dc; padding: 14px 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-shrink: 0; }
-.main-title h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; color: #1a1a1a; }
-.main-title p { font-size: 12px; color: #999; margin-top: 3px; }
-.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
-.view-tabs { display: flex; gap: 4px; }
-.view-tab { font-size: 11px; font-weight: 600; padding: 5px 13px; border-radius: 20px; border: 1px solid #ddd; background: transparent; color: #999; cursor: pointer; transition: all 0.15s; }
-.view-tab.active { background: #1a1a1a; color: #f0ede6; border-color: #1a1a1a; }
-.view-tab:hover:not(.active) { border-color: #bbb; color: #444; }
-.rating-legend { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-.legend-item { font-size: 10px; color: #bbb; white-space: nowrap; }
-.legend-item span { color: #e8c84a; }
+.ep-item {
+  padding: 14px 22px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(26,20,16,0.15);
+  transition: background 0.15s, padding 0.15s;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto auto auto;
+  column-gap: 14px;
+  row-gap: 2px;
+  align-items: baseline;
+  position: relative;
+}
+.ep-item:hover { background: rgba(26,20,16,0.05); }
+.ep-item.active {
+  background: var(--paper);
+  padding-left: 30px;
+}
+.ep-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 6px;
+  background: var(--accent);
+}
+.ep-num {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  grid-column: 1;
+  grid-row: 1;
+}
+.ep-score {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: center;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--accent);
+  font-variation-settings: "SOFT" 0, "opsz" 144;
+  letter-spacing: -0.04em;
+  text-align: right;
+}
+.ep-score.empty {
+  color: var(--ink-4);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 28px;
+}
+.ep-host {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  grid-column: 1;
+  grid-row: 2;
+  font-variation-settings: "opsz" 60;
+}
+.ep-date {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  grid-column: 1;
+  grid-row: 3;
+  margin-top: 2px;
+}
+.ep-meta {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 6px;
+}
+.ep-meta .favs { color: var(--accent); font-style: normal; font-weight: 600; }
+.ep-meta .ep-unaired {
+  color: var(--ink-4);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-style: normal;
+}
 
-.sketches-area { flex: 1; overflow-y: auto; padding: 14px 24px 20px; }
-.sketch-card { background: #fff; border: 1px solid #e8e4dc; border-radius: 10px; padding: 11px 15px; margin-bottom: 7px; transition: box-shadow 0.1s; }
-.sketch-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-.sketch-card.rated-5 { border-left: 3px solid #e8c84a; }
-.sketch-card.rated-4 { border-left: 3px solid #a0c878; }
-.sketch-top { display: flex; align-items: center; gap: 8px; }
-.sketch-order { font-size: 10px; color: #ccc; font-weight: 600; width: 16px; flex-shrink: 0; }
-.sketch-title-input { font-size: 14px; font-weight: 600; color: #1a1a1a; background: transparent; border: none; outline: none; flex: 1; font-family: inherit; min-width: 0; }
-.sketch-title-input::placeholder { color: #ccc; font-weight: 400; }
-.fav-btn { background: none; border: none; cursor: pointer; font-size: 15px; color: #ddd; padding: 0 1px; line-height: 1; transition: color 0.1s; flex-shrink: 0; }
-.fav-btn.active { color: #e8c84a; }
-.fav-btn:hover { color: #e8c84a; }
-.del-btn { background: none; border: none; cursor: pointer; font-size: 11px; color: #ddd; padding: 2px 5px; border-radius: 4px; transition: all 0.1s; flex-shrink: 0; }
-.del-btn:hover { background: #fee; color: #c00; }
-.sketch-row2 { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-.stars { display: flex; gap: 1px; }
-.star { font-size: 16px; cursor: pointer; color: #e8e2d8; line-height: 1; transition: color 0.1s; }
-.star.lit { color: #e8c84a; }
-.star:hover { color: #e8c84a; }
-.rating-label { font-size: 10px; color: #bbb; font-style: italic; }
-.cat-select { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; border: 1px solid #e0ddd6; background: #f8f7f3; color: #888; font-family: inherit; cursor: pointer; }
-.fav-badge { font-size: 10px; background: #fffbea; color: #b8860b; border: 1px solid #f0d060; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
-.sketch-fields { margin-top: 7px; display: flex; flex-direction: column; gap: 3px; }
-.sketch-field { display: flex; align-items: baseline; gap: 6px; }
-.field-label { font-size: 10px; color: #ccc; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; flex-shrink: 0; width: 34px; }
-.sketch-input-sm { font-size: 12px; color: #555; background: transparent; border: none; outline: none; flex: 1; font-family: inherit; border-bottom: 1px solid transparent; padding: 1px 0; }
-.sketch-input-sm:focus { border-bottom-color: #e0ddd6; color: #333; }
-.sketch-input-sm::placeholder { color: #ddd; }
-.sketch-summary { font-size: 11px; color: #aaa; margin-top: 6px; line-height: 1.5; font-style: italic; border-top: 1px solid #f5f2ee; padding-top: 6px; }
+/* ========== MAIN ========== */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--paper);
+}
 
-.add-sketch { margin-top: 6px; }
-.add-btn { font-size: 13px; color: #aaa; background: transparent; border: 1px dashed #d8d4cc; border-radius: 10px; padding: 10px 16px; width: 100%; text-align: left; cursor: pointer; transition: all 0.15s; font-family: inherit; }
-.add-btn:hover { border-color: #bbb; color: #666; background: #fff; }
-.add-form { background: #fff; border: 1px solid #d0cdc5; border-radius: 10px; padding: 14px 16px; }
-.add-form label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; display: block; margin-bottom: 4px; }
-.add-form input, .add-form select, .add-form textarea { font-size: 13px; width: 100%; background: #f8f7f3; border: 1px solid #e0ddd6; border-radius: 8px; padding: 7px 11px; color: #1a1a1a; font-family: inherit; margin-bottom: 10px; outline: none; }
-.add-form input:focus, .add-form select:focus, .add-form textarea:focus { border-color: #aaa; }
-.add-form textarea { resize: vertical; min-height: 52px; font-size: 12px; line-height: 1.5; }
-.form-btns { display: flex; gap: 8px; margin-top: 2px; }
-.btn-save { font-size: 12px; font-weight: 700; padding: 7px 18px; background: #1a1a1a; color: #f0ede6; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
-.btn-save:hover { background: #333; }
-.btn-cancel { font-size: 12px; padding: 7px 14px; background: transparent; color: #888; border: 1px solid #d0cdc5; border-radius: 8px; cursor: pointer; font-family: inherit; }
+.main-header {
+  padding: 26px 44px 20px;
+  border-bottom: 4px double var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 28px;
+  flex-shrink: 0;
+  background: var(--paper);
+}
 
-.ranked-area { flex: 1; overflow-y: auto; padding: 14px 24px 20px; }
-.ranked-empty { text-align: center; padding: 60px 20px; }
-.ranked-empty .icon { font-size: 36px; color: #ddd; margin-bottom: 12px; }
-.ranked-empty p { font-size: 14px; color: #888; margin-bottom: 6px; }
-.ranked-empty small { font-size: 12px; color: #bbb; }
-.rank-item { display: flex; align-items: flex-start; gap: 14px; padding: 11px 16px; background: #fff; border: 1px solid #e8e4dc; border-radius: 10px; margin-bottom: 6px; }
-.rank-item.top3 { border-left: 3px solid #e8c84a; }
-.rank-num { font-size: 14px; font-weight: 700; color: #ddd; width: 22px; text-align: right; flex-shrink: 0; padding-top: 1px; }
-.rank-num.gold { color: #e8c84a; }
-.rank-num.silver { color: #b0b0b0; }
-.rank-num.bronze { color: #cd7f32; }
-.rank-info { flex: 1; min-width: 0; }
-.rank-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
-.rank-ep { font-size: 11px; color: #999; margin-top: 2px; }
-.rank-cast { font-size: 11px; color: #bbb; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rank-notes { font-size: 11px; color: #aaa; font-style: italic; margin-top: 3px; }
-.rank-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-.rank-stars { font-size: 13px; color: #e8c84a; }
-.rank-fav { font-size: 11px; color: #e8c84a; font-weight: 600; }
-.rank-cat { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
-.rank-cat.cold { background: #e6f1fb; color: #185fa5; }
-.rank-cat.pre { background: #eaf3de; color: #3b6d11; }
-.rank-cat.update { background: #faeeda; color: #854f0b; }
-.rank-cat.musical { background: #fbeaf0; color: #993556; }
-.rank-cat.live { background: #f1efff; color: #534ab7; }
+.hero {
+  flex: 1;
+  min-width: 0;
+}
+.hero-kicker {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.hero-kicker::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ink-4);
+  max-width: 120px;
+}
+.hero-title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 56px;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  font-variation-settings: "SOFT" 20, "opsz" 144;
+}
+.hero-dek {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--ink-2);
+  margin-top: 10px;
+  max-width: 640px;
+  font-variation-settings: "opsz" 36;
+}
+.hero-dek em {
+  font-weight: 600;
+  font-style: italic;
+  color: var(--ink);
+}
 
-.empty-main { text-align: center; padding: 80px 20px; color: #ccc; font-size: 14px; }
-::-webkit-scrollbar { width: 5px; }
+.hero-score {
+  text-align: right;
+  flex-shrink: 0;
+  min-width: 140px;
+  padding-left: 24px;
+  border-left: 1px solid var(--ink-4);
+}
+.hero-score-label {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.hero-score-num {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: 84px;
+  line-height: 0.85;
+  color: var(--accent);
+  letter-spacing: -0.05em;
+  margin-top: 4px;
+  font-variation-settings: "SOFT" 0, "opsz" 144;
+}
+.hero-score-num.empty {
+  color: var(--ink-4);
+  font-weight: 400;
+  font-style: italic;
+}
+.hero-score-denom {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-3);
+  margin-top: 6px;
+}
+.hero-score-footnote {
+  font-family: var(--f-meta);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-top: 4px;
+  font-style: normal;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.view-tabs {
+  display: flex;
+  border: 1.5px solid var(--ink);
+}
+.view-tab {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  background: transparent;
+  color: var(--ink);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.view-tab + .view-tab { border-left: 1.5px solid var(--ink); }
+.view-tab.active { background: var(--ink); color: var(--paper); }
+.view-tab:hover:not(.active) { background: rgba(26,20,16,0.08); }
+
+.rating-legend {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-meta);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.legend-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+.legend-dots .ldot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.legend-dots .ldot.empty {
+  background: transparent;
+  border: 1px solid var(--ink-4);
+}
+
+/* ========== SKETCHES AREA ========== */
+.sketches-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 44px 60px;
+}
+
+.sketch-entry {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  column-gap: 22px;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(26,20,16,0.15);
+  position: relative;
+}
+.sketch-entry:last-of-type { border-bottom: 2px solid var(--rule); }
+.sketch-entry.rated-5 { background: linear-gradient(to right, rgba(214,58,31,0.08), transparent 30%); padding-left: 16px; margin-left: -16px; }
+.sketch-entry.rated-4 { background: linear-gradient(to right, rgba(217,155,30,0.10), transparent 30%); padding-left: 16px; margin-left: -16px; }
+
+.sketch-rank {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 0.9;
+  color: var(--ink-4);
+  letter-spacing: -0.04em;
+  font-variation-settings: "SOFT" 0, "opsz" 144;
+  padding-top: 4px;
+}
+.sketch-entry.rated-5 .sketch-rank { color: var(--accent); }
+.sketch-entry.rated-4 .sketch-rank { color: var(--mustard); }
+
+.sketch-body { min-width: 0; }
+
+.sketch-header-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.sketch-title-input {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+  padding: 2px 0;
+  border-bottom: 1px dashed transparent;
+  font-variation-settings: "opsz" 60;
+}
+.sketch-title-input:hover { border-bottom-color: var(--ink-4); }
+.sketch-title-input:focus { border-bottom-color: var(--accent); }
+.sketch-title-input::placeholder { color: var(--ink-4); font-style: italic; }
+
+.sketch-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.icon-btn {
+  background: transparent;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-family: var(--f-meta);
+  font-size: 12px;
+  color: var(--ink-3);
+  transition: all 0.15s;
+  line-height: 1;
+}
+.fav-btn { font-size: 18px; line-height: 1; padding: 4px 6px; color: var(--ink-4); }
+.fav-btn.active { color: var(--accent); }
+.fav-btn:hover { color: var(--accent); transform: scale(1.15); }
+.del-btn { font-size: 12px; color: var(--ink-4); }
+.del-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+.sketch-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.cat-pill {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  color: var(--paper);
+  background: var(--ink);
+  border-radius: 0;
+  display: inline-block;
+  line-height: 1.4;
+}
+.cat-pill.cat-cold    { background: var(--cobalt); }
+.cat-pill.cat-pre     { background: var(--mustard); color: var(--ink); }
+.cat-pill.cat-update  { background: var(--accent); }
+.cat-pill.cat-musical { background: var(--plum); }
+.cat-pill.cat-live    { background: var(--sage); }
+
+.fav-badge {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.rating-dots {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.rating-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.75px solid var(--ink-3);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+.rating-dot.filled {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.rating-dots:hover .rating-dot { background: transparent; border-color: var(--ink-3); }
+.rating-dots .rating-dot:hover,
+.rating-dots .rating-dot:has(~ .rating-dot:hover) {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.rating-dots .rating-dot:hover { transform: scale(1.15); }
+
+.rating-label {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.rating-label.has-rating { color: var(--ink-2); }
+
+.sketch-fields { margin-bottom: 14px; }
+.sketch-field {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 3px 0;
+}
+.field-label {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  flex-shrink: 0;
+  width: 54px;
+}
+.sketch-input-sm {
+  font-family: var(--f-body);
+  font-size: 14px;
+  color: var(--ink-2);
+  background: transparent;
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 2px 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.sketch-input-sm:hover { border-bottom-color: var(--ink-4); }
+.sketch-input-sm:focus { border-bottom-color: var(--ink); color: var(--ink); }
+.sketch-input-sm::placeholder { color: var(--ink-4); font-style: italic; }
+
+.sketch-summary {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  padding-top: 12px;
+  margin-top: 6px;
+  border-top: 1px solid rgba(26,20,16,0.12);
+  font-variation-settings: "opsz" 14;
+}
+.sketch-summary::first-letter {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: 3.4em;
+  float: left;
+  line-height: 0.85;
+  margin: 4px 8px 0 0;
+  color: var(--accent);
+  font-variation-settings: "SOFT" 0, "opsz" 144;
+}
+
+/* ========== ADD SKETCH ========== */
+.add-sketch { margin-top: 28px; padding-top: 28px; border-top: 2px solid var(--rule); }
+.add-btn {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  background: transparent;
+  border: 1.5px dashed var(--ink-3);
+  padding: 16px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.add-btn:hover { color: var(--accent); border-color: var(--accent); border-style: solid; }
+
+.add-form {
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  padding: 22px 26px 24px;
+}
+.add-form-title {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.015em;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink-3);
+}
+.add-form label {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: block;
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+.add-form input, .add-form select, .add-form textarea {
+  font-family: var(--f-body);
+  font-size: 14px;
+  width: 100%;
+  background: var(--paper);
+  border: 1.5px solid var(--ink-3);
+  padding: 9px 12px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.add-form input:focus, .add-form select:focus, .add-form textarea:focus { border-color: var(--accent); }
+.add-form textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+.form-btns { display: flex; gap: 12px; margin-top: 20px; }
+.btn-save {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  padding: 11px 24px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-save:hover { background: var(--accent); }
+.btn-cancel {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  padding: 11px 24px;
+  background: transparent;
+  color: var(--ink-3);
+  border: 1.5px solid var(--ink-3);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-cancel:hover { color: var(--ink); border-color: var(--ink); }
+
+/* ========== BEST OF ========== */
+.ranked-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 44px 60px;
+}
+
+.rank-entry {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 28px;
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(26,20,16,0.15);
+  align-items: start;
+}
+.rank-entry.top-1 {
+  background: linear-gradient(to right, rgba(214,58,31,0.10), transparent 40%);
+  padding-left: 20px;
+  margin-left: -20px;
+}
+.rank-entry.top-2 {
+  background: linear-gradient(to right, rgba(217,155,30,0.10), transparent 40%);
+  padding-left: 20px;
+  margin-left: -20px;
+}
+.rank-entry.top-3 {
+  background: linear-gradient(to right, rgba(125,58,82,0.09), transparent 40%);
+  padding-left: 20px;
+  margin-left: -20px;
+}
+
+.rank-num {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: 98px;
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+  color: var(--ink-4);
+  font-variation-settings: "SOFT" 0, "opsz" 144;
+  text-align: right;
+}
+.rank-num.gold { color: var(--accent); }
+.rank-num.silver { color: var(--mustard); }
+.rank-num.bronze { color: var(--plum); }
+
+.rank-body { min-width: 0; padding-top: 8px; }
+.rank-title {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-variation-settings: "opsz" 60;
+}
+.rank-meta-line {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.rank-ep {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.rank-host {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.rank-cast {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-3);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.rank-notes {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-2);
+  margin-top: 10px;
+  padding: 6px 0 6px 14px;
+  border-left: 3px solid var(--accent);
+  line-height: 1.5;
+}
+.rank-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+  padding-top: 8px;
+}
+.rank-dots {
+  display: inline-flex;
+  gap: 7px;
+}
+.rank-dots .rating-dot { cursor: default; pointer-events: none; }
+.rank-dots .rating-dot.filled { background: var(--accent); border-color: var(--accent); }
+
+/* ========== EMPTY STATES ========== */
+.empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  color: var(--ink-3);
+}
+.empty-state .mark {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 120px;
+  line-height: 0.8;
+  color: var(--ink-4);
+  font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+}
+.empty-state h3 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-style: italic;
+  font-size: 28px;
+  color: var(--ink-2);
+  margin-top: 20px;
+}
+.empty-state p {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-3);
+  margin-top: 10px;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========== SCROLLBARS ========== */
+::-webkit-scrollbar { width: 12px; height: 12px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
-.sidebar ::-webkit-scrollbar-thumb { background: #333; }
+::-webkit-scrollbar-thumb {
+  background: var(--ink-4);
+  border: 3px solid var(--paper);
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
+.sidebar ::-webkit-scrollbar-thumb { border-color: var(--paper-2); background: var(--ink-3); }
+.sidebar ::-webkit-scrollbar-thumb:hover { background: var(--ink-2); }
+
+/* ========== MOBILE CHROME (desktop-hidden, revealed in media query) ========== */
+.mobile-bar { display: none; }
+.sidebar-overlay { display: none; }
+.drawer-close { display: none; }
+
+.hamburger {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.hamburger:hover { background: rgba(26,20,16,0.08); }
+.hamburger:active { background: var(--accent); }
+.hamburger:active span { background: var(--paper); }
+.hamburger span {
+  width: 18px;
+  height: 2px;
+  background: var(--ink);
+  display: block;
+  transition: background 0.15s;
+}
+
+.mobile-masthead {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+}
+.mobile-masthead .amp {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+}
+.mobile-bar-spacer { flex: 1; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1080px) {
+  .hero-title { font-size: 44px; }
+  .hero-score-num { font-size: 66px; }
+  .sketches-area, .ranked-area { padding-left: 28px; padding-right: 28px; }
+  .sidebar { width: 260px; }
+}
+
+/* ========== MOBILE (≤ 720px) ==========
+   On phones the TOC sidebar becomes a slide-in drawer, the whole page scrolls
+   naturally (better momentum/pull behavior), and the sketch/rank grids collapse
+   into single-column stacks with larger touch targets.
+   ========================================================================= */
+@media (max-width: 720px) {
+  html, body { height: auto; overflow-x: hidden; }
+  body { font-size: 14px; }
+
+  /* Whole app becomes a vertical flow, page scrolls instead of inner panels */
+  .app {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+  .main {
+    overflow: visible;
+    height: auto;
+    width: 100%;
+  }
+  #content-area {
+    overflow: visible !important;
+    display: block !important;
+    height: auto !important;
+  }
+  .sketches-area, .ranked-area {
+    overflow: visible;
+    flex: none;
+    padding: 2px 18px 60px;
+  }
+
+  /* Sidebar becomes a left-edge drawer */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    max-width: 86vw;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 4px 0 32px rgba(26, 20, 16, 0);
+    overscroll-behavior: contain;
+  }
+  body.sidebar-open .sidebar {
+    transform: translateX(0);
+    box-shadow: 4px 0 32px rgba(26, 20, 16, 0.25);
+  }
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 20, 16, 0.55);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  body.sidebar-open .sidebar-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  body.sidebar-open { overflow: hidden; }
+
+  .sidebar-header { padding: 22px 22px 16px; }
+  .sidebar-masthead { font-size: 48px; }
+
+  .drawer-close {
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink-3);
+    font-family: var(--f-meta);
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .drawer-close:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* Mobile top bar, stays sticky when scrolling sketches */
+  .mobile-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--paper);
+    padding: 12px 18px;
+    margin: -26px -44px 14px;
+    border-bottom: 1.5px solid var(--rule);
+  }
+
+  /* Main header stacks */
+  .main-header {
+    padding: 0 18px 18px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+  }
+
+  /* Hero: smaller display, full-width dek */
+  .hero-kicker { font-size: 10px; gap: 8px; }
+  .hero-kicker::after { max-width: 60px; }
+  .hero-title {
+    font-size: 40px;
+    letter-spacing: -0.03em;
+  }
+  .hero-dek {
+    font-size: 15px;
+    max-width: none;
+    margin-top: 8px;
+  }
+
+  /* Score block: full-width inline row below dek */
+  .hero-score {
+    text-align: left;
+    padding: 14px 0 0;
+    margin-top: 14px;
+    min-width: 0;
+    border-left: none;
+    border-top: 1px solid rgba(26,20,16,0.25);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 16px;
+    align-items: center;
+  }
+  .hero-score-label {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+    font-size: 9px;
+    letter-spacing: 0.24em;
+  }
+  .hero-score-num {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 56px;
+    line-height: 0.85;
+    margin-top: 2px;
+  }
+  .hero-score-denom {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    margin-top: 0;
+    line-height: 1.4;
+  }
+  .hero-score-footnote {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: 8px;
+    font-size: 8px;
+  }
+
+  /* Header right: tabs go full-width, legend hidden (dots are self-explanatory) */
+  .header-right {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .view-tabs {
+    width: 100%;
+    border-width: 1.5px;
+  }
+  .view-tab {
+    flex: 1;
+    padding: 13px 10px;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+  }
+  .rating-legend { display: none; }
+
+  /* Sketch entries: single column stack */
+  .sketch-entry {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    padding: 22px 0;
+  }
+  .sketch-entry.rated-5,
+  .sketch-entry.rated-4 {
+    padding: 22px 14px;
+    margin-left: -14px;
+    margin-right: -14px;
+    background-size: 100% 80px;
+    background-repeat: no-repeat;
+  }
+
+  .sketch-rank {
+    font-size: 26px;
+    line-height: 1;
+    padding-top: 0;
+    margin-bottom: 8px;
+    color: var(--ink-3);
+  }
+
+  .sketch-header-row {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .sketch-title-input {
+    font-size: 22px;
+    line-height: 1.15;
+  }
+  .icon-btn { padding: 6px 10px; min-width: 38px; min-height: 38px; display: inline-flex; align-items: center; justify-content: center; }
+  .fav-btn { font-size: 20px; }
+
+  .sketch-meta-row {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  /* Bigger tappable rating dots */
+  .rating-row {
+    margin-bottom: 14px;
+    row-gap: 4px;
+  }
+  .rating-dots {
+    gap: 14px;
+    padding: 6px 0;
+  }
+  .rating-dot {
+    width: 22px;
+    height: 22px;
+    border-width: 2px;
+  }
+  .rating-label {
+    width: 100%;
+    font-size: 12px;
+  }
+
+  /* Stacked labels + inputs for cast/notes */
+  .sketch-fields { margin-bottom: 14px; }
+  .sketch-field {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(26,20,16,0.08);
+  }
+  .sketch-field:last-child { border-bottom: none; }
+  .field-label { width: auto; }
+  .sketch-input-sm { font-size: 15px; padding: 4px 0; }
+
+  .sketch-summary {
+    font-size: 14px;
+    padding-top: 10px;
+    margin-top: 4px;
+  }
+  .sketch-summary::first-letter {
+    font-size: 3em;
+    margin: 2px 6px 0 0;
+  }
+
+  /* Add sketch */
+  .add-sketch { margin-top: 22px; padding-top: 22px; }
+  .add-btn { padding: 14px; font-size: 10px; }
+  .add-form { padding: 20px 18px 22px; }
+  .add-form-title { font-size: 20px; }
+  .add-form input, .add-form select, .add-form textarea {
+    font-size: 16px; /* prevents iOS auto-zoom on focus */
+    padding: 10px 12px;
+  }
+  .form-btns {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .form-btns > * { width: 100%; padding: 13px 20px; }
+
+  /* Best Of entries stack */
+  .rank-entry {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 22px 0;
+  }
+  .rank-entry.top-1,
+  .rank-entry.top-2,
+  .rank-entry.top-3 {
+    padding-left: 14px;
+    padding-right: 14px;
+    margin-left: -14px;
+    margin-right: -14px;
+  }
+  .rank-num {
+    font-size: 64px;
+    line-height: 0.85;
+    text-align: left;
+  }
+  .rank-title { font-size: 22px; }
+  .rank-meta-line {
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .rank-host, .rank-ep, .rank-cast { font-size: 12px; }
+  .rank-notes { font-size: 13px; margin-top: 8px; }
+  .rank-right {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 8px;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  /* Empty states on mobile */
+  .empty-state { padding: 60px 20px; }
+  .empty-state .mark { font-size: 90px; }
+  .empty-state h3 { font-size: 24px; }
+  .empty-state p { font-size: 14px; }
+
+  /* Sidebar scrollbar thinner */
+  ::-webkit-scrollbar { width: 6px; }
+}
+
+/* Very narrow phones: a touch tighter */
+@media (max-width: 380px) {
+  .sketches-area, .ranked-area { padding-left: 14px; padding-right: 14px; }
+  .mobile-bar { margin-left: -14px; margin-right: -14px; padding: 12px 14px; }
+  .main-header { padding-left: 14px; padding-right: 14px; }
+  .hero-title { font-size: 34px; }
+  .hero-score-num { font-size: 48px; }
+  .rank-num { font-size: 56px; }
+}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-logo">Saturday Night Live</div>
-      <div class="sidebar-title">Season 51 Tracker</div>
-      <div class="sidebar-sub">2025–26</div>
+      <button class="drawer-close" onclick="toggleSidebar(false)" aria-label="Close episodes menu" title="Close">✕</button>
+      <div class="sidebar-kicker">Saturday Night Live</div>
+      <div class="sidebar-masthead">S<span class="amp">&amp;</span>51</div>
+      <div class="sidebar-dek">A running catalogue of the Fifty-first season</div>
+      <div class="sidebar-years">MMXXV — MMXXVI</div>
     </div>
-    <div class="ep-list" id="ep-list"></div>
-  </div>
-  <div class="main">
-    <div class="main-header">
-      <div class="main-title">
-        <h2 id="main-title">Select an episode</h2>
-        <p id="main-sub"></p>
+    <nav class="ep-list" id="ep-list"></nav>
+  </aside>
+  <div class="sidebar-overlay" onclick="toggleSidebar(false)" aria-hidden="true"></div>
+  <main class="main">
+    <header class="main-header">
+      <div class="mobile-bar">
+        <button class="hamburger" onclick="toggleSidebar()" aria-label="Open episodes menu" title="Episodes">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="mobile-masthead">S<span class="amp">&amp;</span>51</div>
+        <div class="mobile-bar-spacer"></div>
       </div>
+      <div class="hero" id="hero-area"></div>
       <div class="header-right">
         <div class="view-tabs">
-          <button class="view-tab active" onclick="setView('episode')">Episode</button>
-          <button class="view-tab" onclick="setView('ranked')">Best of ★</button>
+          <button class="view-tab active" onclick="setView('episode')">The Episode</button>
+          <button class="view-tab" onclick="setView('ranked')">The Best of</button>
         </div>
-        <div class="rating-legend">
-          <div class="legend-item"><span>★</span> Offensive</div>
-          <div class="legend-item"><span>★★</span> Weak</div>
-          <div class="legend-item"><span>★★★</span> Pretty good</div>
-          <div class="legend-item"><span>★★★★</span> Really good</div>
-          <div class="legend-item"><span>★★★★★</span> Classic</div>
+        <div class="rating-legend" title="1 = offensive · 2 = weak · 3 = pretty good · 4 = really good · 5 = classic">
+          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span></span> Offensive</span>
+          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span><span class="ldot"></span><span class="ldot empty"></span><span class="ldot empty"></span><span class="ldot empty"></span></span> Weak</span>
+          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot empty"></span><span class="ldot empty"></span></span> Pretty good</span>
+          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot empty"></span></span> Really good</span>
+          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span></span> Classic</span>
         </div>
       </div>
-    </div>
+    </header>
     <div id="content-area" style="flex:1;overflow:hidden;display:flex;flex-direction:column;"></div>
-  </div>
+  </main>
 </div>
 
 <script>
@@ -474,112 +1620,231 @@ function selectEp(id) {
   }
   renderSidebar();
   currentView === 'ranked' ? renderRanked() : renderEpisode();
+  // Close the mobile drawer after choosing an episode, and jump to top so the
+  // chosen issue's hero is visible.
+  if (window.matchMedia('(max-width: 720px)').matches) {
+    toggleSidebar(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function toggleSidebar(forceState) {
+  const isOpen = document.body.classList.contains('sidebar-open');
+  const willOpen = (forceState === undefined) ? !isOpen : !!forceState;
+  document.body.classList.toggle('sidebar-open', willOpen);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.body.classList.contains('sidebar-open')) toggleSidebar(false);
+});
+
+// Running score for an episode: sum of ratings on non-musical sketches.
+function episodeScore(ep) {
+  return ep.sketches.reduce((sum, s) => sum + (s.cat !== 'musical' ? (s.rating || 0) : 0), 0);
+}
+function episodeRatedCount(ep) {
+  return ep.sketches.filter(s => s.rating > 0 && s.cat !== 'musical').length;
+}
+function episodeRatableCount(ep) {
+  return ep.sketches.filter(s => s.cat !== 'musical').length;
+}
+
+// Roman numeral for an issue-number display (capped in practice by total episodes).
+function toRoman(n) {
+  const m = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
+  let out = '';
+  for (const [sym, v] of m) { while (n >= v) { out += sym; n -= v; } }
+  return out;
 }
 
 function renderSidebar() {
-  document.getElementById('ep-list').innerHTML = episodes.map(ep => {
+  document.getElementById('ep-list').innerHTML = episodes.map((ep, i) => {
+    const total = ep.sketches.length;
     const rated = ep.sketches.filter(s => s.rating > 0).length;
     const favs = ep.sketches.filter(s => s.fav).length;
-    const total = ep.sketches.length;
-    let stats = total > 0 ? `<span>${total} sketches</span>` : `<span style="color:#333">No sketches yet</span>`;
-    if (rated) stats += `<span class="rated">${rated} rated</span>`;
-    if (favs) stats += `<span class="favs">♥ ${favs}</span>`;
+    const score = episodeScore(ep);
+    const num = String(i + 1).padStart(2, '0');
+
+    let meta;
+    if (total === 0) {
+      meta = `<span class="ep-unaired">Not yet aired</span>`;
+    } else {
+      const parts = [`${total} sketches`];
+      if (rated) parts.push(`${rated} rated`);
+      if (favs) parts.push(`<span class="favs">♥ ${favs}</span>`);
+      meta = parts.join(' · ');
+    }
+
+    const scoreHtml = score > 0
+      ? `<div class="ep-score" title="Running score — sum of sketch ratings, musical performances excluded">${score}</div>`
+      : `<div class="ep-score empty">—</div>`;
+
     return `<div class="ep-item ${ep.id===activeEpId?'active':''}" onclick="selectEp('${ep.id}')">
-      <div class="ep-num">${ep.ep}</div>
+      <div class="ep-num">No. ${num}</div>
+      ${scoreHtml}
       <div class="ep-host">${escHtml(ep.host)}</div>
-      <div class="ep-date">${ep.date}</div>
-      <div class="ep-stats">${stats}</div>
+      <div class="ep-date">${ep.date.toUpperCase()}</div>
+      <div class="ep-meta">${meta}</div>
     </div>`;
   }).join('');
 }
 
 function renderEpisode() {
   const content = document.getElementById('content-area');
+  const hero = document.getElementById('hero-area');
   const ep = getEp();
-  if (!ep) { content.innerHTML = '<div class="empty-main">← Choose an episode</div>'; return; }
-  document.getElementById('main-title').textContent = ep.host;
-  document.getElementById('main-sub').textContent = `${ep.ep} · ${ep.date} · Musical guest: ${ep.musical}`;
+  if (!ep) {
+    hero.innerHTML = `<div class="hero-kicker">Season 51</div><div class="hero-title">Select an issue</div><div class="hero-dek">Choose an episode from the contents at left to begin reviewing.</div>`;
+    content.innerHTML = '';
+    return;
+  }
 
-  const cards = ep.sketches.map((s, i) => {
+  const i = episodes.findIndex(e => e.id === ep.id);
+  const num = String(i + 1).padStart(2, '0');
+  const score = episodeScore(ep);
+  const ratedCount = episodeRatedCount(ep);
+  const ratable = episodeRatableCount(ep);
+  const total = ep.sketches.length;
+
+  // Hero block: kicker · big host display · italic dek · running score block
+  hero.innerHTML = `
+    <div class="hero-kicker">Issue No. ${num} <span style="color:var(--ink-3)">—</span> ${escHtml(ep.date)}</div>
+    <h1 class="hero-title">${escHtml(ep.host)}</h1>
+    <div class="hero-dek">Hosted Saturday Night Live with musical guest <em>${escHtml(ep.musical)}</em>.</div>
+  `;
+
+  // Right-side score block injected into the same header, next to the view tabs
+  // — appended as the first child of .header-right so tabs stay at top
+  // We build the score as a floating-right block at the end of the hero instead.
+  const scoreBlock = `<div class="hero-score">
+    <div class="hero-score-label">Running Score</div>
+    <div class="hero-score-num ${score > 0 ? '' : 'empty'}">${score > 0 ? score : '—'}</div>
+    <div class="hero-score-denom">${ratedCount} of ${ratable} sketches rated</div>
+    <div class="hero-score-footnote">Musical performances excluded</div>
+  </div>`;
+  hero.insertAdjacentHTML('beforeend', scoreBlock);
+
+  const cards = ep.sketches.map((s, idx) => {
     const rc = s.rating === 5 ? 'rated-5' : s.rating === 4 ? 'rated-4' : '';
-    return `<div class="sketch-card ${rc}">
-      <div class="sketch-top">
-        <span class="sketch-order">${i+1}</span>
-        <input class="sketch-title-input" value="${escHtml(s.title)}" onchange="updateField('${ep.id}','${s.id}','title',this.value)" placeholder="Sketch title" />
-        <button class="fav-btn ${s.fav?'active':''}" onclick="toggleFav('${ep.id}','${s.id}')" title="Favorite">♥</button>
-        <button class="del-btn" onclick="deleteSketch('${ep.id}','${s.id}')">✕</button>
-      </div>
-      <div class="sketch-row2">
-        <div class="stars">${[1,2,3,4,5].map(n=>`<span class="star ${s.rating>=n?'lit':''}" onclick="setRating('${ep.id}','${s.id}',${n})">★</span>`).join('')}</div>
-        <span class="rating-label">${RATING_LABELS[s.rating]}</span>
-        <select class="cat-select" onchange="updateField('${ep.id}','${s.id}','cat',this.value)">
-          ${Object.entries(CATS).map(([k,v])=>`<option value="${k}" ${s.cat===k?'selected':''}>${v}</option>`).join('')}
-        </select>
-        ${s.fav?'<span class="fav-badge">♥ Fave</span>':''}
-      </div>
-      <div class="sketch-fields">
-        <div class="sketch-field">
-          <span class="field-label">Cast</span>
-          <input class="sketch-input-sm" value="${escHtml(s.cast)}" onchange="updateField('${ep.id}','${s.id}','cast',this.value)" placeholder="Cast members featured…" />
+    const rankNum = String(idx + 1).padStart(2, '0');
+    const label = RATING_LABELS[s.rating] || (s.cat === 'musical' ? 'Musical performance' : 'Unrated');
+    const labelCls = s.rating ? 'has-rating' : '';
+
+    return `<article class="sketch-entry ${rc}">
+      <div class="sketch-rank">${rankNum}</div>
+      <div class="sketch-body">
+        <div class="sketch-header-row">
+          <input class="sketch-title-input" value="${escHtml(s.title)}" onchange="updateField('${ep.id}','${s.id}','title',this.value)" placeholder="Sketch title" />
+          <div class="sketch-actions">
+            <button class="icon-btn fav-btn ${s.fav?'active':''}" onclick="toggleFav('${ep.id}','${s.id}')" title="Favorite">${s.fav ? '♥' : '♡'}</button>
+            <button class="icon-btn del-btn" onclick="deleteSketch('${ep.id}','${s.id}')" title="Remove">✕</button>
+          </div>
         </div>
-        <div class="sketch-field">
-          <span class="field-label">Notes</span>
-          <input class="sketch-input-sm" value="${escHtml(s.notes)}" onchange="updateField('${ep.id}','${s.id}','notes',this.value)" placeholder="Your notes…" />
+        <div class="sketch-meta-row">
+          <span class="cat-pill cat-${s.cat}">${CATS[s.cat]||s.cat}</span>
+          ${s.fav ? '<span class="fav-badge">♥ Favorite</span>' : ''}
         </div>
+        <div class="rating-row">
+          <div class="rating-dots">
+            ${[1,2,3,4,5].map(n=>`<button class="rating-dot ${s.rating>=n?'filled':''}" onclick="setRating('${ep.id}','${s.id}',${n})" aria-label="Rate ${n} out of 5" title="Rate ${n}"></button>`).join('')}
+          </div>
+          <span class="rating-label ${labelCls}">${label}</span>
+        </div>
+        <div class="sketch-fields">
+          <div class="sketch-field">
+            <span class="field-label">Cast</span>
+            <input class="sketch-input-sm" value="${escHtml(s.cast)}" onchange="updateField('${ep.id}','${s.id}','cast',this.value)" placeholder="Who's in it?" />
+          </div>
+          <div class="sketch-field">
+            <span class="field-label">Notes</span>
+            <input class="sketch-input-sm" value="${escHtml(s.notes)}" onchange="updateField('${ep.id}','${s.id}','notes',this.value)" placeholder="Your review…" />
+          </div>
+        </div>
+        ${s.summary ? `<div class="sketch-summary">${escHtml(s.summary)}</div>` : ''}
       </div>
-      ${s.summary?`<div class="sketch-summary">${escHtml(s.summary)}</div>`:''}
-    </div>`;
+    </article>`;
   }).join('');
 
   const addHtml = showAddForm ? `<div class="add-form">
-    <label>Sketch title</label>
+    <div class="add-form-title">Add a sketch</div>
+    <label>Title</label>
     <input id="new-title" placeholder="e.g. Weekend Update" />
     <label>Category</label>
-    <select id="new-cat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select>
-    <label>Cast members</label>
+    <select id="new-cat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}" ${k==='live'?'selected':''}>${v}</option>`).join('')}</select>
+    <label>Cast</label>
     <input id="new-cast" placeholder="e.g. Kenan Thompson, Mikey Day" />
-    <label>Summary / Notes</label>
-    <textarea id="new-summary" placeholder="Brief description or your notes…"></textarea>
+    <label>Summary or notes</label>
+    <textarea id="new-summary" placeholder="Brief description…"></textarea>
     <div class="form-btns">
       <button class="btn-save" onclick="addSketch('${ep.id}')">Add sketch</button>
       <button class="btn-cancel" onclick="cancelAdd()">Cancel</button>
     </div>
-  </div>` : `<button class="add-btn" onclick="showAdd()">+ Add sketch</button>`;
+  </div>` : `<button class="add-btn" onclick="showAdd()">+ Add a sketch</button>`;
 
-  const emptyMsg = ep.sketches.length === 0 ? '<div style="text-align:center;padding:40px 0;color:#ccc;font-size:13px;">No sketches yet — add them below</div>' : '';
+  const emptyMsg = total === 0 ? `<div class="empty-state">
+    <div class="mark">&amp;</div>
+    <h3>Not yet aired</h3>
+    <p>This episode hasn't happened yet. Come back after it airs, or add sketches manually below.</p>
+  </div>` : '';
+
   content.innerHTML = `<div class="sketches-area">${emptyMsg}${cards}<div class="add-sketch">${addHtml}</div></div>`;
-  if (showAddForm) setTimeout(() => { const t = document.getElementById('new-title'); if(t) t.focus(); }, 30);
+  if (showAddForm) setTimeout(() => { const t = document.getElementById('new-title'); if (t) t.focus(); }, 30);
 }
 
 function renderRanked() {
   const content = document.getElementById('content-area');
-  document.getElementById('main-title').textContent = 'Best of Season 51';
-  document.getElementById('main-sub').textContent = 'All rated & favorited sketches ranked';
+  const hero = document.getElementById('hero-area');
 
   const all = [];
-  episodes.forEach(ep => ep.sketches.forEach(s => { if (s.rating > 0 || s.fav) all.push({...s, epHost:ep.host, epDate:ep.date, epNum:ep.ep}); }));
-  all.sort((a,b) => (b.rating-a.rating) || (b.fav-a.fav) || a.title.localeCompare(b.title));
+  episodes.forEach(ep => ep.sketches.forEach(s => {
+    if (s.rating > 0 || s.fav) all.push({...s, epHost: ep.host, epDate: ep.date, epNum: ep.ep});
+  }));
+  all.sort((a, b) => (b.rating - a.rating) || (b.fav - a.fav) || a.title.localeCompare(b.title));
+
+  // Hero for Best Of
+  const totalRated = all.filter(s => s.rating > 0).length;
+  hero.innerHTML = `
+    <div class="hero-kicker">Season 51 <span style="color:var(--ink-3)">—</span> The Catalogue</div>
+    <h1 class="hero-title">The Best Of</h1>
+    <div class="hero-dek">Every rated and favorited sketch of the season, ranked.</div>
+    <div class="hero-score">
+      <div class="hero-score-label">Rated Entries</div>
+      <div class="hero-score-num ${totalRated > 0 ? '' : 'empty'}">${totalRated > 0 ? totalRated : '—'}</div>
+      <div class="hero-score-denom">across the season</div>
+    </div>
+  `;
 
   if (!all.length) {
-    content.innerHTML = `<div class="ranked-area"><div class="ranked-empty"><div class="icon">★</div><p>No rated sketches yet</p><small>Go to an episode and rate some sketches — they'll appear here ranked</small></div></div>`;
+    content.innerHTML = `<div class="ranked-area"><div class="empty-state">
+      <div class="mark">&amp;</div>
+      <h3>Nothing ranked yet</h3>
+      <p>Rate or favorite some sketches on any episode, and they'll show up here — ordered by your verdict.</p>
+    </div></div>`;
     return;
   }
 
-  const numCls = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
-  const html = all.map((s,i)=>`<div class="rank-item ${i<3?'top3':''}">
-    <div class="rank-num ${numCls(i)}">${i+1}</div>
-    <div class="rank-info">
+  const numCls = i => i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+  const topCls = i => i < 3 ? `top-${i+1}` : '';
+
+  const html = all.map((s, i) => `<article class="rank-entry ${topCls(i)}">
+    <div class="rank-num ${numCls(i)}">${i + 1}</div>
+    <div class="rank-body">
       <div class="rank-title">${escHtml(s.title)}</div>
-      <div class="rank-ep">${s.epNum} · ${s.epDate} · ${s.epHost}</div>
-      ${s.cast?`<div class="rank-cast">${escHtml(s.cast)}</div>`:''}
-      ${s.notes?`<div class="rank-notes">"${escHtml(s.notes)}"</div>`:''}
+      <div class="rank-meta-line">
+        <span class="cat-pill cat-${s.cat}">${CATS[s.cat]||s.cat}</span>
+        <span class="rank-ep">${s.epNum} — ${s.epDate}</span>
+        <span class="rank-host">hosted by ${escHtml(s.epHost)}</span>
+      </div>
+      ${s.cast ? `<div class="rank-cast">Featuring ${escHtml(s.cast)}</div>` : ''}
+      ${s.notes ? `<div class="rank-notes">"${escHtml(s.notes)}"</div>` : ''}
     </div>
     <div class="rank-right">
-      <div class="rank-stars">${'★'.repeat(s.rating)}</div>
-      ${s.fav?'<div class="rank-fav">♥ Fave</div>':''}
-      <span class="rank-cat ${s.cat}">${CATS[s.cat]||s.cat}</span>
+      <div class="rating-dots rank-dots">
+        ${[1,2,3,4,5].map(n => `<span class="rating-dot ${s.rating>=n?'filled':''}"></span>`).join('')}
+      </div>
+      ${s.fav ? '<span class="fav-badge">♥ Favorite</span>' : ''}
     </div>
-  </div>`).join('');
+  </article>`).join('');
 
   content.innerHTML = `<div class="ranked-area">${html}</div>`;
 }
