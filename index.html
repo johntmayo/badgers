@@ -762,6 +762,104 @@ input, textarea, select { font: inherit; color: inherit; }
 }
 .btn-cancel:hover { color: var(--ink); border-color: var(--ink); }
 
+/* ========== NEXT ISSUE (page-turn nav at the end of the sketches) ========== */
+.next-issue {
+  display: block;
+  width: 100%;
+  background: var(--paper-2);
+  border: 2px solid var(--ink);
+  padding: 26px 72px 28px 32px;
+  margin-top: 48px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+  font: inherit;
+  position: relative;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.next-issue:hover { background: var(--ink); color: var(--paper); }
+.next-issue:hover .next-issue-kicker { color: var(--accent-soft); }
+.next-issue:hover .next-issue-num,
+.next-issue:hover .next-issue-meta { color: var(--paper-3); }
+.next-issue:hover::after { color: var(--paper); transform: translateY(-50%) translateX(6px); }
+
+.next-issue-kicker {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.next-issue-num {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+  transition: color 0.18s;
+}
+.next-issue-title {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+  margin-bottom: 10px;
+}
+.next-issue-meta {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-3);
+  transition: color 0.18s;
+}
+.next-issue::after {
+  content: '→';
+  position: absolute;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--f-display);
+  font-size: 44px;
+  font-weight: 400;
+  color: var(--ink-3);
+  transition: transform 0.2s ease, color 0.18s ease;
+}
+.next-issue.upcoming { background: transparent; border-style: dashed; border-color: var(--ink-3); }
+.next-issue.upcoming .next-issue-title { color: var(--ink-2); }
+.next-issue.upcoming .next-issue-kicker { color: var(--ink-3); }
+
+/* End-of-season marker when viewing the final episode */
+.end-of-season {
+  margin-top: 48px;
+  padding: 36px 24px;
+  text-align: center;
+  border-top: 3px double var(--rule);
+  border-bottom: 3px double var(--rule);
+}
+.end-of-season .end-mark {
+  font-family: var(--f-display);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--accent);
+  font-style: italic;
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+}
+.end-of-season .end-label {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 12px;
+}
+
 /* ========== BEST OF ========== */
 .ranked-area {
   flex: 1;
@@ -1251,6 +1349,26 @@ input, textarea, select { font: inherit; color: inherit; }
     gap: 8px;
   }
   .form-btns > * { width: 100%; padding: 13px 20px; }
+
+  /* Next issue card: tighter padding, smaller title, arrow moves below */
+  .next-issue {
+    margin-top: 32px;
+    padding: 22px 22px 24px;
+  }
+  .next-issue-title { font-size: 32px; }
+  .next-issue-meta { font-size: 13px; }
+  .next-issue::after {
+    position: static;
+    display: block;
+    transform: none;
+    font-size: 32px;
+    margin-top: 14px;
+    text-align: right;
+  }
+  .next-issue:hover::after { transform: translateX(6px); }
+
+  .end-of-season { margin-top: 32px; padding: 28px 16px; }
+  .end-of-season .end-mark { font-size: 40px; }
 
   /* Best Of entries stack */
   .rank-entry {
@@ -1918,7 +2036,32 @@ function renderEpisode() {
     <p>This episode hasn't happened yet. Come back after it airs, or add sketches manually below.</p>
   </div>` : '';
 
-  content.innerHTML = `<div class="sketches-area">${emptyMsg}${cards}<div class="add-sketch">${addHtml}</div></div>`;
+  // Page-turn nav: jump to the next episode in sequence so rating sessions flow
+  // without requiring a trip back to the sidebar.
+  const idx = episodes.findIndex(e => e.id === ep.id);
+  const nextEp = idx >= 0 && idx < episodes.length - 1 ? episodes[idx + 1] : null;
+  let pageTurnHtml = '';
+  if (nextEp) {
+    const upcoming = !nextEp.sketches || nextEp.sketches.length === 0;
+    const hostLabel = nextEp.host || 'TBA';
+    const metaBits = [];
+    if (nextEp.date) metaBits.push(escHtml(nextEp.date));
+    if (upcoming) metaBits.push('Not yet aired');
+    else if (nextEp.sketches) metaBits.push(`${nextEp.sketches.length} sketches`);
+    pageTurnHtml = `<button class="next-issue${upcoming ? ' upcoming' : ''}" onclick="selectEp('${nextEp.id}')" title="Go to the next episode">
+      <div class="next-issue-kicker">Next Issue →</div>
+      <div class="next-issue-num">No. ${String(idx + 2).padStart(2,'0')}</div>
+      <div class="next-issue-title">${escHtml(hostLabel)}</div>
+      <div class="next-issue-meta">${metaBits.join(' · ')}</div>
+    </button>`;
+  } else {
+    pageTurnHtml = `<div class="end-of-season">
+      <div class="end-mark">&amp;</div>
+      <div class="end-label">End of the Season</div>
+    </div>`;
+  }
+
+  content.innerHTML = `<div class="sketches-area">${emptyMsg}${cards}<div class="add-sketch">${addHtml}</div>${pageTurnHtml}</div>`;
   if (showAddForm) setTimeout(() => { const t = document.getElementById('new-title'); if (t) t.focus(); }, 30);
 }
 
