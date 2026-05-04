@@ -620,6 +620,43 @@ input, textarea, select { font: inherit; color: inherit; }
 }
 .rating-label.has-rating { color: var(--ink-2); }
 
+.wu-pieces {
+  margin: 14px 0 16px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  background: rgba(26,20,16,0.04);
+  display: grid;
+  gap: 12px;
+}
+.wu-piece {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(26,20,16,0.12);
+}
+.wu-piece:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.wu-piece-title {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.wu-piece-desc {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+.wu-piece .rating-dots { justify-content: flex-end; }
+
 .sketch-fields { margin-bottom: 14px; }
 .sketch-field {
   display: flex;
@@ -861,40 +898,211 @@ input, textarea, select { font: inherit; color: inherit; }
 }
 
 /* ========== BEST OF ========== */
+.ranked-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dash-top {
+  flex-shrink: 0;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 22px 44px 20px;
+  border-bottom: 4px double var(--paper-3);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dash-panel {
+  border: 1px solid rgba(243,234,215,0.28);
+  background: rgba(243,234,215,0.06);
+  padding: 14px;
+  min-width: 0;
+}
+
+.dash-panel.summary-panel {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.dash-stat {
+  border: 1px solid rgba(243,234,215,0.28);
+  background: rgba(243,234,215,0.08);
+  padding: 12px 14px;
+}
+
+.dash-label,
+.dash-panel-title,
+.dash-row-label,
+.dash-row-value {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.dash-label,
+.dash-panel-title,
+.dash-row-label { color: rgba(243,234,215,0.68); }
+
+.dash-value {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  color: var(--paper);
+  margin-top: 8px;
+}
+
+.dash-panel-title {
+  color: var(--paper);
+  margin-bottom: 12px;
+}
+
+.dash-bars,
+.dash-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.dash-bar-row,
+.dash-leader-row,
+.dash-cat-row {
+  display: grid;
+  grid-template-columns: minmax(72px, 1fr) minmax(90px, 1.4fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-bar-track {
+  height: 8px;
+  background: rgba(243,234,215,0.16);
+  border: 1px solid rgba(243,234,215,0.18);
+}
+
+.dash-bar-fill {
+  height: 100%;
+  min-width: 2px;
+  background: var(--accent);
+}
+
+.dash-bar-fill.grade-gold { background: var(--mustard); }
+.dash-bar-fill.grade-green { background: var(--sage); }
+.dash-bar-fill.grade-amber { background: var(--accent); }
+.dash-bar-fill.grade-red { background: var(--plum); }
+
+.dash-row-value {
+  color: var(--paper);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.rank-controls {
+  flex-shrink: 0;
+  display: grid;
+  gap: 10px;
+  padding: 14px 44px;
+  border-bottom: 2px solid var(--rule);
+  background: var(--paper-2);
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.control-label {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-right: 2px;
+}
+
+.dash-pill {
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 6px 10px;
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.dash-pill:hover,
+.dash-pill.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.dash-search {
+  min-width: 220px;
+  flex: 1;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  padding: 7px 10px;
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 14px;
+}
+
 .ranked-area {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: 10px 44px 60px;
 }
 
 .rank-entry {
   display: grid;
-  grid-template-columns: 110px 1fr auto;
-  gap: 28px;
-  padding: 28px 0;
+  grid-template-columns: 92px 1fr auto;
+  gap: 24px;
+  padding: 24px 0;
   border-bottom: 1px solid rgba(26,20,16,0.15);
   align-items: start;
+  position: relative;
 }
-.rank-entry.top-1 {
-  background: linear-gradient(to right, rgba(214,58,31,0.10), transparent 40%);
-  padding-left: 20px;
-  margin-left: -20px;
+
+.rank-entry.has-rankless {
+  grid-template-columns: 1fr auto;
 }
-.rank-entry.top-2 {
-  background: linear-gradient(to right, rgba(217,155,30,0.10), transparent 40%);
-  padding-left: 20px;
-  margin-left: -20px;
+
+.rank-entry.is-fav {
+  background: linear-gradient(to right, rgba(217,155,30,0.10), transparent 36%);
+  padding-left: 16px;
+  margin-left: -16px;
 }
+
+.rank-entry.top-1,
+.rank-entry.top-2,
 .rank-entry.top-3 {
-  background: linear-gradient(to right, rgba(125,58,82,0.09), transparent 40%);
-  padding-left: 20px;
-  margin-left: -20px;
+  border-left: 6px solid var(--mustard);
+  padding-left: 18px;
+  margin-left: -24px;
 }
 
 .rank-num {
   font-family: var(--f-display);
   font-weight: 900;
-  font-size: 98px;
+  font-size: 76px;
   line-height: 0.82;
   letter-spacing: -0.05em;
   color: var(--ink-4);
@@ -909,7 +1117,7 @@ input, textarea, select { font: inherit; color: inherit; }
 .rank-title {
   font-family: var(--f-display);
   font-weight: 700;
-  font-size: 28px;
+  font-size: 26px;
   line-height: 1.1;
   letter-spacing: -0.015em;
   margin-bottom: 10px;
@@ -955,6 +1163,26 @@ input, textarea, select { font: inherit; color: inherit; }
   border-left: 3px solid var(--accent);
   line-height: 1.5;
 }
+.rank-summary {
+  font-family: var(--f-body);
+  font-size: 14px;
+  color: var(--ink-2);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.summary-toggle {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 10px;
+  padding: 0;
+}
 .rank-right {
   display: flex;
   flex-direction: column;
@@ -969,6 +1197,51 @@ input, textarea, select { font: inherit; color: inherit; }
 }
 .rank-dots .rating-dot { cursor: default; pointer-events: none; }
 .rank-dots .rating-dot.filled { background: var(--accent); border-color: var(--accent); }
+
+.rank-label {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-3);
+  text-align: right;
+  max-width: 170px;
+}
+
+.rank-group-header {
+  padding: 24px 0 8px;
+  border-bottom: 2px solid var(--rule);
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.rank-result-count {
+  padding: 24px 0 0;
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.rank-entry.compact {
+  grid-template-columns: 62px 1fr auto;
+  gap: 16px;
+  padding: 12px 0;
+}
+.rank-entry.compact.has-rankless { grid-template-columns: 1fr auto; }
+.rank-entry.compact .rank-num { font-size: 42px; }
+.rank-entry.compact .rank-body { padding-top: 2px; }
+.rank-entry.compact .rank-title {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.rank-entry.compact .rank-meta-line { margin-bottom: 0; }
+.rank-entry.compact .rank-dots { gap: 4px; }
 
 /* ========== EMPTY STATES ========== */
 .empty-state {
@@ -1068,6 +1341,8 @@ input, textarea, select { font: inherit; color: inherit; }
   .hero-title { font-size: 44px; }
   .hero-score-num { font-size: 66px; }
   .sketches-area, .ranked-area { padding-left: 28px; padding-right: 28px; }
+  .dash-top { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-left: 28px; padding-right: 28px; }
+  .rank-controls { padding-left: 28px; padding-right: 28px; }
   .sidebar { width: 260px; }
 }
 
@@ -1100,6 +1375,26 @@ input, textarea, select { font: inherit; color: inherit; }
     overflow: visible;
     flex: none;
     padding: 2px 18px 60px;
+  }
+  .ranked-shell {
+    overflow: visible;
+    display: block;
+  }
+  .dash-top {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+  .dash-panel.summary-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dash-value { font-size: 28px; }
+  .rank-controls {
+    padding: 12px 18px;
+  }
+  .dash-search {
+    min-width: 0;
+    width: 100%;
+    flex-basis: 100%;
   }
 
   /* Sidebar becomes a left-edge drawer */
@@ -1311,6 +1606,11 @@ input, textarea, select { font: inherit; color: inherit; }
     width: 100%;
     font-size: 12px;
   }
+  .wu-piece {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .wu-piece .rating-dots { justify-content: flex-start; }
 
   /* Stacked labels + inputs for cast/notes */
   .sketch-fields { margin-bottom: 14px; }
@@ -1375,6 +1675,11 @@ input, textarea, select { font: inherit; color: inherit; }
     grid-template-columns: 1fr;
     gap: 10px;
     padding: 22px 0;
+  }
+  .rank-entry.has-rankless,
+  .rank-entry.compact,
+  .rank-entry.compact.has-rankless {
+    grid-template-columns: 1fr;
   }
   .rank-entry.top-1,
   .rank-entry.top-2,
@@ -1779,6 +2084,12 @@ let episodes = JSON.parse(JSON.stringify(BASE_EPISODES));
 let activeEpId = 'ep1';
 let currentView = 'episode';
 let showAddForm = false;
+let dashSort = 'rating';
+let dashFilter = 'all';
+let dashGroup = 'none';
+let dashDisplay = 'standard';
+let dashSearch = '';
+let dashShowSummary = {};
 
 function loadData() {
   try { const s = localStorage.getItem('snl51_v3'); if (s) episodes = JSON.parse(s); } catch(e) {}
@@ -1787,6 +2098,78 @@ function saveData() {
   try { localStorage.setItem('snl51_v3', JSON.stringify(episodes)); } catch(e) {}
 }
 function getEp() { return episodes.find(e => e.id === activeEpId); }
+
+function isFlowSketch(s) {
+  const title = (s.title || '').toLowerCase();
+  if (title.includes('opening montage')) return false;
+  if (title.includes('goodbyes') || title.includes('closing credits')) return false;
+  return true;
+}
+
+function isComedyScoreSketch(s) {
+  return isFlowSketch(s) && s.cat !== 'musical';
+}
+
+function getUpdatePieces(s) {
+  if (s.cat !== 'update') return [];
+  const summary = s.summary || '';
+  const pieces = [{
+    id: 'news',
+    title: 'Jost & Che news-of-the-week jokes',
+    cast: 'Colin Jost, Michael Che',
+    summary: summary.split(/With guests,/i)[0].trim()
+  }];
+
+  const guestText = summary.split(/With guests,/i)[1] || '';
+  const re = /([^,.]+?(?:\([^)]+\))?)\s+stops? by Weekend Update to discuss(?:ed)?\s+(.+?)(?=,\s*(?:and\s+)?[^,.]+?(?:\([^)]+\))?\s+stops? by Weekend Update to discuss(?:ed)?|\.|$)/gi;
+  let match;
+  while ((match = re.exec(guestText)) !== null) {
+    const title = match[1].replace(/^and\s+/i, '').trim();
+    const desc = match[2].trim();
+    if (title) {
+      pieces.push({
+        id: `desk_${pieces.length}`,
+        title,
+        cast: updatePieceCast(title),
+        summary: desc
+      });
+    }
+  }
+
+  if (pieces.length === 1) {
+    (s.cast || '').split(',').map(name => name.trim()).filter(Boolean).forEach(name => {
+      if (!['Colin Jost','Michael Che'].includes(name)) {
+        pieces.push({ id: `desk_${pieces.length}`, title: `${name} desk piece`, cast: name, summary: '' });
+      }
+    });
+  }
+  return pieces;
+}
+
+function updatePieceCast(title) {
+  const paren = title.match(/\(([^)]+)\)/);
+  if (paren && !/\b(first|former|new|his|her|their|the)\b/i.test(paren[1])) return paren[1];
+  return title
+    .replace(/\([^)]*\)/g, '')
+    .replace(/^(new cast member|former Weekend Update anchors?)\s+/i, '')
+    .trim();
+}
+
+function getUpdateRating(s, pieceId) {
+  return (s.updateRatings && s.updateRatings[pieceId]) || 0;
+}
+
+function getComedyRatingUnits(ep) {
+  const units = [];
+  ep.sketches.filter(isComedyScoreSketch).forEach(s => {
+    if (s.cat === 'update') {
+      getUpdatePieces(s).forEach(piece => units.push({ rating: getUpdateRating(s, piece.id) }));
+    } else {
+      units.push(s);
+    }
+  });
+  return units;
+}
 
 function setView(v) {
   currentView = v;
@@ -1887,15 +2270,16 @@ function importData() {
   input.click();
 }
 
-// Running score for an episode: sum of ratings on non-musical sketches.
+// Running score for an episode: sum of comedy ratings only. Musical
+// performances remain rateable but never affect the episode score.
 function episodeScore(ep) {
-  return ep.sketches.reduce((sum, s) => sum + (s.cat !== 'musical' ? (s.rating || 0) : 0), 0);
+  return getComedyRatingUnits(ep).reduce((sum, s) => sum + (s.rating || 0), 0);
 }
 function episodeRatedCount(ep) {
-  return ep.sketches.filter(s => s.rating > 0 && s.cat !== 'musical').length;
+  return getComedyRatingUnits(ep).filter(s => s.rating > 0).length;
 }
 function episodeRatableCount(ep) {
-  return ep.sketches.filter(s => s.cat !== 'musical').length;
+  return getComedyRatingUnits(ep).length;
 }
 
 // Roman numeral for an issue-number display (capped in practice by total episodes).
@@ -1908,9 +2292,11 @@ function toRoman(n) {
 
 function renderSidebar() {
   document.getElementById('ep-list').innerHTML = episodes.map((ep, i) => {
-    const total = ep.sketches.length;
-    const rated = ep.sketches.filter(s => s.rating > 0).length;
-    const favs = ep.sketches.filter(s => s.fav).length;
+    const flowSketches = ep.sketches.filter(isFlowSketch);
+    const total = flowSketches.length;
+    const rated = flowSketches.filter(s => s.cat !== 'update' && s.rating > 0).length
+      + flowSketches.filter(s => s.cat === 'update').reduce((n, s) => n + getUpdatePieces(s).filter(piece => getUpdateRating(s, piece.id) > 0).length, 0);
+    const favs = flowSketches.filter(s => s.fav).length;
     const score = episodeScore(ep);
     const num = String(i + 1).padStart(2, '0');
 
@@ -1925,7 +2311,7 @@ function renderSidebar() {
     }
 
     const scoreHtml = score > 0
-      ? `<div class="ep-score" title="Running score — sum of sketch ratings, musical performances excluded">${score}</div>`
+      ? `<div class="ep-score" title="Running score — comedy ratings only; musical performances excluded">${score}</div>`
       : `<div class="ep-score empty">—</div>`;
 
     return `<div class="ep-item ${ep.id===activeEpId?'active':''}" onclick="selectEp('${ep.id}')">
@@ -1953,7 +2339,8 @@ function renderEpisode() {
   const score = episodeScore(ep);
   const ratedCount = episodeRatedCount(ep);
   const ratable = episodeRatableCount(ep);
-  const total = ep.sketches.length;
+  const flowSketches = ep.sketches.filter(isFlowSketch);
+  const total = flowSketches.length;
 
   // Hero block: kicker · big host display · italic dek · running score block
   hero.innerHTML = `
@@ -1969,15 +2356,32 @@ function renderEpisode() {
     <div class="hero-score-label">Running Score</div>
     <div class="hero-score-num ${score > 0 ? '' : 'empty'}">${score > 0 ? score : '—'}</div>
     <div class="hero-score-denom">${ratedCount} of ${ratable} sketches rated</div>
-    <div class="hero-score-footnote">Musical performances excluded</div>
+    <div class="hero-score-footnote">Comedy ratings only</div>
   </div>`;
   hero.insertAdjacentHTML('beforeend', scoreBlock);
 
-  const cards = ep.sketches.map((s, idx) => {
-    const rc = s.rating === 5 ? 'rated-5' : s.rating === 4 ? 'rated-4' : '';
+  const cards = flowSketches.map((s, idx) => {
     const rankNum = String(idx + 1).padStart(2, '0');
+    const isUpdate = s.cat === 'update';
+    const updatePieces = isUpdate ? getUpdatePieces(s) : [];
+    const displayRating = isUpdate ? Math.max(0, ...updatePieces.map(piece => getUpdateRating(s, piece.id))) : s.rating;
+    const rc = displayRating === 5 ? 'rated-5' : displayRating === 4 ? 'rated-4' : '';
     const label = RATING_LABELS[s.rating] || (s.cat === 'musical' ? 'Musical performance' : 'Unrated');
     const labelCls = s.rating ? 'has-rating' : '';
+    const updateHtml = isUpdate ? `<div class="wu-pieces">
+      ${updatePieces.map(piece => {
+        const pieceRating = getUpdateRating(s, piece.id);
+        return `<div class="wu-piece">
+          <div>
+            <div class="wu-piece-title">${escHtml(piece.title)}</div>
+            ${piece.summary ? `<div class="wu-piece-desc">${escHtml(piece.summary)}</div>` : ''}
+          </div>
+          <div class="rating-dots">
+            ${[1,2,3,4,5].map(n=>`<button class="rating-dot ${pieceRating>=n?'filled':''}" onclick="setUpdateRating('${ep.id}','${s.id}','${piece.id}',${n})" aria-label="Rate ${escHtml(piece.title)} ${n} out of 5" title="Rate ${n}"></button>`).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>` : '';
 
     return `<article class="sketch-entry ${rc}">
       <div class="sketch-rank">${rankNum}</div>
@@ -1992,13 +2396,14 @@ function renderEpisode() {
         <div class="sketch-meta-row">
           <span class="cat-pill cat-${s.cat}">${CATS[s.cat]||s.cat}</span>
           ${s.fav ? '<span class="fav-badge">♥ Favorite</span>' : ''}
+          ${s.cat === 'musical' ? '<span class="fav-badge">Score-neutral</span>' : ''}
         </div>
-        <div class="rating-row">
+        ${isUpdate ? updateHtml : `<div class="rating-row">
           <div class="rating-dots">
             ${[1,2,3,4,5].map(n=>`<button class="rating-dot ${s.rating>=n?'filled':''}" onclick="setRating('${ep.id}','${s.id}',${n})" aria-label="Rate ${n} out of 5" title="Rate ${n}"></button>`).join('')}
           </div>
           <span class="rating-label ${labelCls}">${label}</span>
-        </div>
+        </div>`}
         <div class="sketch-fields">
           <div class="sketch-field">
             <span class="field-label">Cast</span>
@@ -2068,59 +2473,315 @@ function renderEpisode() {
 function renderRanked() {
   const content = document.getElementById('content-area');
   const hero = document.getElementById('hero-area');
+  const rated = getDashItems().filter(s => s.rating > 0);
 
-  const all = [];
-  episodes.forEach(ep => ep.sketches.forEach(s => {
-    if (s.rating > 0 || s.fav) all.push({...s, epHost: ep.host, epDate: ep.date, epNum: ep.ep});
-  }));
-  all.sort((a, b) => (b.rating - a.rating) || (b.fav - a.fav) || a.title.localeCompare(b.title));
-
-  // Hero for Best Of
-  const totalRated = all.filter(s => s.rating > 0).length;
   hero.innerHTML = `
     <div class="hero-kicker">Season 51 <span style="color:var(--ink-3)">—</span> The Catalogue</div>
     <h1 class="hero-title">The Best Of</h1>
     <div class="hero-dek">Every rated and favorited sketch of the season, ranked.</div>
     <div class="hero-score">
       <div class="hero-score-label">Rated Entries</div>
-      <div class="hero-score-num ${totalRated > 0 ? '' : 'empty'}">${totalRated > 0 ? totalRated : '—'}</div>
+      <div class="hero-score-num ${rated.length > 0 ? '' : 'empty'}">${rated.length > 0 ? rated.length : '—'}</div>
       <div class="hero-score-denom">across the season</div>
     </div>
   `;
 
-  if (!all.length) {
-    content.innerHTML = `<div class="ranked-area"><div class="empty-state">
+  content.innerHTML = `<div class="ranked-shell">
+    ${buildDash()}
+    ${buildControls()}
+    <div id="ranked-list" class="ranked-area"></div>
+  </div>`;
+  rerenderList();
+}
+
+function getDashItems() {
+  const all = [];
+  episodes.forEach((ep, epIndex) => ep.sketches.forEach((s, sketchIndex) => {
+    if (!isFlowSketch(s)) return;
+    if (s.cat === 'update') {
+      getUpdatePieces(s).forEach((piece, pieceIndex) => {
+        const rating = getUpdateRating(s, piece.id);
+        if (rating > 0) {
+          all.push({
+            ...s,
+            id: `${s.id}_${piece.id}`,
+            title: `${s.title}: ${piece.title}`,
+            cast: piece.cast || s.cast,
+            summary: piece.summary || s.summary,
+            rating,
+            fav: false,
+            epHost: ep.host,
+            epDate: ep.date,
+            epNum: ep.ep,
+            epIndex,
+            sketchIndex,
+            pieceIndex
+          });
+        }
+      });
+      return;
+    }
+    if (s.rating > 0 || s.fav) all.push({...s, epHost: ep.host, epDate: ep.date, epNum: ep.ep, epIndex, sketchIndex, pieceIndex: 0});
+  }));
+  return all;
+}
+
+function avgRating(items) {
+  const rated = items.filter(s => s.rating > 0);
+  if (!rated.length) return 0;
+  return rated.reduce((sum, s) => sum + s.rating, 0) / rated.length;
+}
+
+function fmtAvg(n) { return n ? n.toFixed(2) : '—'; }
+
+function gradeClass(avg) {
+  if (avg >= 4) return 'grade-gold';
+  if (avg >= 3) return 'grade-green';
+  if (avg >= 2) return 'grade-amber';
+  return 'grade-red';
+}
+
+function buildDash() {
+  const items = getDashItems();
+  const rated = items.filter(s => s.rating > 0);
+  const maxDist = Math.max(1, ...[1,2,3,4,5].map(n => rated.filter(s => s.rating === n).length));
+  const classics = rated.filter(s => s.rating === 5).length;
+  const favs = items.filter(s => s.fav).length;
+  const seasonAvg = avgRating(rated);
+
+  const distHtml = [5,4,3,2,1].map(n => {
+    const count = rated.filter(s => s.rating === n).length;
+    return `<div class="dash-bar-row">
+      <div class="dash-row-label">${'★'.repeat(n)}</div>
+      <div class="dash-bar-track"><div class="dash-bar-fill" style="width:${(count / maxDist) * 100}%"></div></div>
+      <div class="dash-row-value">${count}</div>
+    </div>`;
+  }).join('');
+
+  const eps = episodes.map(ep => {
+    const epRated = getComedyRatingUnits(ep).filter(s => s.rating > 0);
+    const avg = avgRating(epRated);
+    return { ep, avg, count: epRated.length };
+  }).filter(row => row.count > 0).sort((a, b) => (b.avg - a.avg) || b.count - a.count);
+  const maxEpAvg = Math.max(5, ...eps.map(row => row.avg));
+  const epHtml = eps.length ? eps.map(row => `<div class="dash-bar-row">
+    <div class="dash-row-label">${escHtml(row.ep.host)}</div>
+    <div class="dash-bar-track"><div class="dash-bar-fill ${gradeClass(row.avg)}" style="width:${(row.avg / maxEpAvg) * 100}%"></div></div>
+    <div class="dash-row-value">${fmtAvg(row.avg)} · ${row.count}</div>
+  </div>`).join('') : '<div class="dash-row-label">No rated episodes yet</div>';
+
+  const castMap = {};
+  rated.forEach(s => (s.cast || '').split(',').map(name => name.trim()).filter(Boolean).forEach(name => {
+    if (!castMap[name]) castMap[name] = { name, sum: 0, count: 0 };
+    castMap[name].sum += s.rating;
+    castMap[name].count += 1;
+  }));
+  const castRows = Object.values(castMap)
+    .map(row => ({...row, avg: row.sum / row.count}))
+    .sort((a, b) => (b.avg - a.avg) || (b.count - a.count) || a.name.localeCompare(b.name))
+    .slice(0, 8);
+  const castHtml = castRows.length ? castRows.map(row => `<div class="dash-leader-row">
+    <div class="dash-row-label">${escHtml(row.name)}</div>
+    <div class="dash-bar-track"><div class="dash-bar-fill" style="width:${(row.avg / 5) * 100}%"></div></div>
+    <div class="dash-row-value">${fmtAvg(row.avg)} · ${row.count}</div>
+  </div>`).join('') : '<div class="dash-row-label">No cast ratings yet</div>';
+
+  const catHtml = Object.entries(CATS).map(([key, label]) => {
+    const catRated = rated.filter(s => s.cat === key);
+    const avg = avgRating(catRated);
+    return `<div class="dash-cat-row">
+      <div class="dash-row-label">${label}</div>
+      <div class="dash-bar-track"><div class="dash-bar-fill ${gradeClass(avg)}" style="width:${avg ? (avg / 5) * 100 : 0}%"></div></div>
+      <div class="dash-row-value">${fmtAvg(avg)} · ${catRated.length}</div>
+    </div>`;
+  }).join('');
+
+  return `<section class="dash-top">
+    <div class="dash-panel summary-panel">
+      <div class="dash-stat"><div class="dash-label">Classics</div><div class="dash-value">${classics}</div></div>
+      <div class="dash-stat"><div class="dash-label">Rated</div><div class="dash-value">${rated.length}</div></div>
+      <div class="dash-stat"><div class="dash-label">Average</div><div class="dash-value">${fmtAvg(seasonAvg)}</div></div>
+      <div class="dash-stat"><div class="dash-label">Favorites</div><div class="dash-value">${favs}</div></div>
+    </div>
+    <div class="dash-panel"><div class="dash-panel-title">Rating Distribution</div><div class="dash-bars">${distHtml}</div></div>
+    <div class="dash-panel"><div class="dash-panel-title">Episode Grades</div><div class="dash-stack">${epHtml}</div></div>
+    <div class="dash-panel"><div class="dash-panel-title">Cast Leaderboard</div><div class="dash-stack">${castHtml}</div></div>
+    <div class="dash-panel"><div class="dash-panel-title">Category Breakdown</div><div class="dash-stack">${catHtml}</div></div>
+  </section>`;
+}
+
+function controlButton(group, value, label) {
+  const active = ({sort: dashSort, filter: dashFilter, group: dashGroup, display: dashDisplay})[group] === value;
+  return `<button class="dash-pill ${active ? 'active' : ''}" data-control="${group}" data-value="${value}" onclick="setDashControl('${group}','${value}')">${label}</button>`;
+}
+
+function buildControls() {
+  return `<section class="rank-controls">
+    <div class="control-row">
+      <span class="control-label">Sort</span>
+      ${controlButton('sort','rating','Rating')}
+      ${controlButton('sort','episode','Episode order')}
+      ${controlButton('sort','category','Category')}
+      ${controlButton('sort','host','Host')}
+      ${controlButton('sort','cast','Cast')}
+    </div>
+    <div class="control-row">
+      <span class="control-label">Filter</span>
+      ${controlButton('filter','all','All')}
+      ${controlButton('filter','star5','★★★★★')}
+      ${controlButton('filter','star4','★★★★')}
+      ${controlButton('filter','star3','★★★')}
+      ${controlButton('filter','favorites','Favorites')}
+      ${controlButton('filter','cold','Cold Opens')}
+      ${controlButton('filter','pre','Pre-tapes')}
+      ${controlButton('filter','update','Weekend Update')}
+      ${controlButton('filter','musical','Musical')}
+      ${controlButton('filter','live','Live')}
+    </div>
+    <div class="control-row">
+      <span class="control-label">Group</span>
+      ${controlButton('group','none','None')}
+      ${controlButton('group','rating','Rating tier')}
+      ${controlButton('group','category','Category')}
+      ${controlButton('group','host','Host')}
+      <span class="control-label">View</span>
+      ${controlButton('display','standard','Standard')}
+      ${controlButton('display','compact','Compact')}
+      ${controlButton('display','detailed','Detailed')}
+      <input class="dash-search" value="${escHtml(dashSearch)}" oninput="dashSearch=this.value; rerenderList()" placeholder="Search title, cast, notes, or host" />
+    </div>
+  </section>`;
+}
+
+function setDashControl(group, value) {
+  if (group === 'sort') dashSort = value;
+  if (group === 'filter') dashFilter = value;
+  if (group === 'group') dashGroup = value;
+  if (group === 'display') dashDisplay = value;
+  document.querySelectorAll(`[data-control="${group}"]`).forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.value === value);
+  });
+  rerenderList();
+}
+
+function sortDashItems(items) {
+  const firstCast = s => (s.cast || '').split(',').map(n => n.trim()).filter(Boolean)[0] || '';
+  const byRating = (a, b) => (b.rating - a.rating) || (b.fav - a.fav) || (a.epIndex - b.epIndex) || (a.sketchIndex - b.sketchIndex) || ((a.pieceIndex || 0) - (b.pieceIndex || 0)) || a.title.localeCompare(b.title);
+  const sorted = [...items];
+  sorted.sort((a, b) => {
+    if (dashSort === 'episode') return (a.epIndex - b.epIndex) || (a.sketchIndex - b.sketchIndex) || ((a.pieceIndex || 0) - (b.pieceIndex || 0));
+    if (dashSort === 'category') return (CATS[a.cat] || a.cat).localeCompare(CATS[b.cat] || b.cat) || byRating(a, b);
+    if (dashSort === 'host') return a.epHost.localeCompare(b.epHost) || byRating(a, b);
+    if (dashSort === 'cast') return firstCast(a).localeCompare(firstCast(b)) || byRating(a, b);
+    return byRating(a, b);
+  });
+  return sorted;
+}
+
+function filterDashItems(items) {
+  const q = dashSearch.trim().toLowerCase();
+  return items.filter(s => {
+    if (dashFilter === 'star5' && s.rating !== 5) return false;
+    if (dashFilter === 'star4' && s.rating !== 4) return false;
+    if (dashFilter === 'star3' && s.rating !== 3) return false;
+    if (dashFilter === 'favorites' && !s.fav) return false;
+    if (['cold','pre','update','musical','live'].includes(dashFilter) && s.cat !== dashFilter) return false;
+    if (!q) return true;
+    return [s.title, s.cast, s.notes, s.epHost].some(v => (v || '').toLowerCase().includes(q));
+  });
+}
+
+function groupLabel(s) {
+  if (dashGroup === 'rating') return s.rating > 0 ? `${s.rating}★ · ${RATING_LABELS[s.rating]}` : 'Unrated Favorites';
+  if (dashGroup === 'category') return CATS[s.cat] || s.cat;
+  if (dashGroup === 'host') return s.epHost;
+  return '';
+}
+
+function buildList(items) {
+  if (!items.length) {
+    return `<div class="empty-state">
       <div class="mark">&amp;</div>
       <h3>Nothing ranked yet</h3>
-      <p>Rate or favorite some sketches on any episode, and they'll show up here — ordered by your verdict.</p>
-    </div></div>`;
-    return;
+      <p>Rate or favorite some sketches on any episode, and they'll show up here ordered by your verdict.</p>
+    </div>`;
   }
 
+  const rankable = dashSort === 'rating' && dashGroup === 'none';
   const numCls = i => i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-  const topCls = i => i < 3 ? `top-${i+1}` : '';
+  const topCls = i => rankable && i < 3 ? `top-${i+1}` : '';
+  const entryHtml = (s, i) => {
+    const showSummary = dashDisplay === 'detailed' || !!dashShowSummary[s.id];
+    const hasSummaryToggle = dashDisplay === 'standard' && s.summary;
+    const rankNum = rankable ? `<div class="rank-num ${numCls(i)}">${i + 1}</div>` : '';
+    const meta = dashDisplay === 'compact'
+      ? `<div class="rank-meta-line"><span class="rank-ep">${s.epNum} — ${s.epDate}</span></div>`
+      : `<div class="rank-meta-line">
+          <span class="cat-pill cat-${s.cat}">${CATS[s.cat]||s.cat}</span>
+          <span class="rank-ep">${s.epNum} — ${s.epDate}</span>
+          <span class="rank-host">hosted by ${escHtml(s.epHost)}</span>
+        </div>`;
+    const castHtml = dashDisplay !== 'compact' && s.cast ? `<div class="rank-cast">Featuring ${escHtml(s.cast)}</div>` : '';
+    const notesHtml = dashDisplay !== 'compact' && s.notes ? `<div class="rank-notes">"${escHtml(s.notes)}"</div>` : '';
+    const summaryHtml = showSummary && s.summary ? `<div class="rank-summary">${escHtml(s.summary)}</div>` : '';
+    const toggleHtml = hasSummaryToggle ? `<button class="summary-toggle" onclick="toggleDashSummary('${s.id}')">${showSummary ? '▲ hide summary' : '▼ summary'}</button>` : '';
+    const labelHtml = dashDisplay === 'detailed' ? `<div class="rank-label">${RATING_LABELS[s.rating] || 'Unrated favorite'}</div>` : '';
 
-  const html = all.map((s, i) => `<article class="rank-entry ${topCls(i)}">
-    <div class="rank-num ${numCls(i)}">${i + 1}</div>
-    <div class="rank-body">
-      <div class="rank-title">${escHtml(s.title)}</div>
-      <div class="rank-meta-line">
-        <span class="cat-pill cat-${s.cat}">${CATS[s.cat]||s.cat}</span>
-        <span class="rank-ep">${s.epNum} — ${s.epDate}</span>
-        <span class="rank-host">hosted by ${escHtml(s.epHost)}</span>
+    return `<article class="rank-entry ${dashDisplay} ${rankable ? '' : 'has-rankless'} ${s.fav ? 'is-fav' : ''} ${topCls(i)}">
+      ${rankNum}
+      <div class="rank-body">
+        <div class="rank-title">${escHtml(s.title)}</div>
+        ${meta}
+        ${castHtml}
+        ${notesHtml}
+        ${toggleHtml}
+        ${summaryHtml}
       </div>
-      ${s.cast ? `<div class="rank-cast">Featuring ${escHtml(s.cast)}</div>` : ''}
-      ${s.notes ? `<div class="rank-notes">"${escHtml(s.notes)}"</div>` : ''}
-    </div>
-    <div class="rank-right">
-      <div class="rating-dots rank-dots">
-        ${[1,2,3,4,5].map(n => `<span class="rating-dot ${s.rating>=n?'filled':''}"></span>`).join('')}
+      <div class="rank-right">
+        <div class="rating-dots rank-dots">
+          ${[1,2,3,4,5].map(n => `<span class="rating-dot ${s.rating>=n?'filled':''}"></span>`).join('')}
+        </div>
+        ${labelHtml}
+        ${s.fav ? '<span class="fav-badge">♥ Favorite</span>' : ''}
       </div>
-      ${s.fav ? '<span class="fav-badge">♥ Favorite</span>' : ''}
-    </div>
-  </article>`).join('');
+    </article>`;
+  };
 
-  content.innerHTML = `<div class="ranked-area">${html}</div>`;
+  let html = '';
+  if (dashGroup === 'none') {
+    html = items.map(entryHtml).join('');
+  } else {
+    const groups = [];
+    items.forEach(item => {
+      const label = groupLabel(item);
+      let group = groups.find(g => g.label === label);
+      if (!group) {
+        group = { label, items: [] };
+        groups.push(group);
+      }
+      group.items.push(item);
+    });
+    let offset = 0;
+    html = groups.map(group => {
+      const entries = group.items.map((item, idx) => entryHtml(item, offset + idx)).join('');
+      offset += group.items.length;
+      return `<div class="rank-group-header">${escHtml(group.label)}</div>${entries}`;
+    }).join('');
+  }
+
+  return `${html}<div class="rank-result-count">${items.length} result${items.length === 1 ? '' : 's'}</div>`;
+}
+
+function rerenderList() {
+  const target = document.getElementById('ranked-list');
+  if (!target) return;
+  const items = sortDashItems(filterDashItems(getDashItems()));
+  target.innerHTML = buildList(items);
+}
+
+function toggleDashSummary(id) {
+  dashShowSummary[id] = !dashShowSummary[id];
+  rerenderList();
 }
 
 function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -2134,6 +2795,13 @@ function updateField(epId, sId, field, val) {
 function setRating(epId, sId, rating) {
   const s = episodes.find(e=>e.id===epId).sketches.find(s=>s.id===sId);
   s.rating = s.rating===rating ? 0 : rating;
+  saveData(); renderSidebar(); renderEpisode();
+}
+
+function setUpdateRating(epId, sId, pieceId, rating) {
+  const s = episodes.find(e=>e.id===epId).sketches.find(s=>s.id===sId);
+  if (!s.updateRatings) s.updateRatings = {};
+  s.updateRatings[pieceId] = s.updateRatings[pieceId] === rating ? 0 : rating;
   saveData(); renderSidebar(); renderEpisode();
 }
 
