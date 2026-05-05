@@ -1768,6 +1768,79 @@ The goodnight speech for Colman Domingo is "Tonight... Tonight is for all the li
 [[Category:Season 51]]
 [[Category:Season 51 Episodes]]
 
+{{Episode Infobox
+|season=[[Season 51]]
+|seasonnumber=18
+|episodenumber=1,006
+|host=[[Olivia Rodrigo]]
+|musicalguest=Olivia Rodrigo
+|musicalguestsongs="'''drop dead'''"<br> "'''begged'''"
+|imagehost=[[File:OliviaRodrigo51 - Host.png|300px]]
+|imagemusicalguest=[[File:OliviaRodrigo51 - MG.png|300px]]
+|previousepisode=[[April 11, 2026]]
+|nextepisode=[[May 9, 2026]]}}
+The 1,006th episode and 18th episode of ''[[Saturday Night Live]]'s'' [[Season 51|51st season]] which premiered on May 2, 2026, hosted by pop sensation, singer, songwriter and actress [[Olivia Rodrigo]], who also served as the episode's musical guest. Olivia Rodrigo previously made her 2nd musical guest appearances on SNL on the following dates: On [[May 15, 2021]], the nineteenth/penultimate episode of ''SNL's'' [[Season 46|46th season]], hosted by actor and comedian [[Keegan-Michael Key]], and on [[December 9, 2023]], the seventh and Holidays-themed episode of ''SNL's'' [[Season 49|49th season]], hosted by actor [[Adam Driver]]. This is Olivia Rodrigo's first-time hosting and her 3rd musical guest appearance was made on SNL.
+
+The goodnight speech for Olivia Rodrigo is "Wow, Here to Thank You to Aziz Ansari, Debbie Harry and Connor Storrie, (Cheers and applause), This is the Best Cast and Crew and Writers in This Business, I... I Couldn't Be More Grateful, This is a True Honor, A Real Dream Come True, Thank You So Much to Lorne, I Will Never Forget This Night, Thank You So Much, Good Night". (Cheers and applause again)
+
+==Cast==
+===Repertory Players===
+*[[Michael Che]]
+*[[Mikey Day]]
+*[[Andrew Dismukes]]
+*[[Chloe Fineman]]
+*[[Marcello Hernandez]]
+*[[James Austin Johnson]]
+*[[Colin Jost]]
+*[[Sarah Sherman]]
+*[[Kenan Thompson]]
+
+===Featured Players===
+*[[Tommy Brennan]]
+*[[Jeremy Culhane]]
+*[[Ben Marshall]]
+*[[Ashley Padilla]]
+*[[Kam Patterson]]
+*[[Veronika Slowikowska]]
+*[[Jane Wickline]]
+
+:''Cameos by [[Aziz Ansari]], [[Deborah Harry|Debbie Harry]], and [[Connor Storrie]]''.
+
+==Sketches and Musical Performances==
+{{Lineup-key}}
+{| class="wikitable"
+|-
+!Title!!Image!!Summary
+|-
+{{lineup3|grey|Hegseth and Patel Iran Press Briefing Cold Opening|[[File:Hegseth and Patel Iran Press Briefing Cold Open.png|200px]]
+[[File:LFNYS51E18.png|200px]]|Pete Hegseth (Colin Jost) and Kash Patel (Aziz Ansari) answer reporters' questions about the war in Iran. With Ashley Padilla, Ben Marshall, Marcello Hernandez, Sarah Sherman, Kam Patterson, Jeremy Culhane, and Tommy Brennan.}}
+{{lineup3|black|Opening Montage|&nbsp;|The seventeenth "Behind the Scenes" footage set changes from the Cold Opening to the Monologue for Season 51 of ''Saturday Night Live'' presented by T-Mobile. Also, the musical guests/hosts introductions' clips of the opening montage were changed to one again, only for this episode (one clip for host and musical guest Olivia Rodrigo),}}
+{{lineup3|black|Monologue by Olivia Rodrigo|[[File:Olivia Rodrigo Monologue.png|200px]]|Hosting for the first time, and three-time musical guest Olivia Rodrigo talks about getting her start as a child actor before performing a new song about a big event in her adult life.}}
+{{lineup3|darkred|Edge of Destiny|[[File:Edge of Destiny.png|200px]]|A classic TV channel airs an episode of an '80s soap opera. With Olivia Rodrigo, Chloe Fineman, Marcello Hernandez, Andrew Dismukes, Mikey Day, Sarah Sherman, and Kenan Thompson.}}
+{{lineup3|navy|My Room|[[File:My Room.png|200px]]|A teenage girl (Olivia Rodrigo) performs a song about her perfect bedroom. With Mikey Day, Sarah Sherman, and James Austin Johnson.}}
+{{lineup3|darkred|Shop TV: Lava Cake|[[File:Shop TV Lava Cake .png|200px]]|Hosts Rhett & Bev (Mikey Day, Ashley Padilla) welcome a baker (Olivia Rodrigo) to show off her famous lava cake. With James Austin Johnson.}}
+{{lineup3|black|Next Episode Commercial Bumper|&nbsp;|Matt Damon will return to host SNL for the third time on May 9th. The Academy Award winner next stars in Christopher Nolan's "The Odyssey," in theaters July 17. Noah Kahan will perform as musical guest for the second time.}}
+{{lineup3|darkred|My Ex|[[File:My Ex.png|200px]]|Two exes (Olivia Rodrigo, Ben Marshall) try to make each other jealous by pretending to date other people (Tommy Brennan, Ashley Padilla). With Marcello Hernandez.}}
+{{lineup3|green|Olivia Rodrigo performed "'''drop dead'''". Debbie Harry introduces Olivia Rodrigo's first performance.|[[File:Screenshot 2026-05-03 090509.png|200px]]
+[[File:Drop dead.png|200px]]|Host and Musical Guest Olivia Rodrigo performed "'''drop dead'''" on Saturday Night Live. Olivia's performance was introduced by Debbie Harry, the lead singer of the new wave band Blondie. '''Flash warning, if you're sensitive to flashing lights'''.  The upbeat, scathing lead single from her upcoming album.}}
+{{lineup3|#bf7b00|Weekend Update with Colin Jost and Michael Che|[[File:Screenshot 2026-05-03 090316.png|200px]]
+[[File:Kam Patterson on Megan Thee Stallion and Klay Thompson's Breakup.png|200px]]|Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like King Charles meeting New York City mayor Zohran Mamdani and a woman damaging a statue in Italy while trying to touch its genitals. With guests, Alix Earle (Veronika Slowikowska) and Alex Cooper (Chloe Fineman) stop by Weekend Update to discuss their feud, and Kam Patterson stops by Weekend Update to discuss Megan Thee Stallion breaking up with Klay Thompson.}}
+{{lineup3|darkred|Busted|[[File:Busted.png|200px]]|A man (Marcello Hernández) sings a song about busting his fiancé (Olivia Rodrigo) for cheating. With James Austin Johnson, Jane Wickline, Chloe Fineman, and Kenan Thompson.}}
+{{lineup3|green|Olivia Rodrigo performed "'''begged'''". Connor Storrie introduces Olivia Rodrigo's second performance.|[[File:Begged.png|200px]]
+[[File:Olivia performs begged.png|200px]]|Host and Musical Guest Olivia Rodrigo performed "'''begged'''" on Saturday Night Live. Olivia's performance was introduced by ''Heated Rivalry'' actor Connor Storrie. A stripped-down, more emotional, and unreleased track.}}
+{{lineup3|darkred|Rasta Driver|[[File:Rasta Driver.png|200px]]|Two party girls (Olivia Rodrigo, Veronika Slowikowska) experience an unusual moment with their driver (Andrew Dismukes).}}
+{{lineup3|navy|Home Security Ad|[[File:Home Security Ad.png|200px]]|A commercial advertises the first home security system designed to help identify intruders by producing viral footage. With Veronika Slowikowska, Tommy Brennan, Ben Marshall, Olivia Rodrigo, Mikey Day, Jane Wickline, Sarah Sherman, Ashley Padilla, Andrew Dismukes, Marcello Hernandez, Chloe Fineman, Jeremy Culhane, and Kam Patterson.}}
+{{lineup3|black|Goodbyes and Closing Credits|[[File:Olivia Goodnights.png|200px]]|Olivia Rodrigo thanked Aziz Ansari, Debbie Harry, and Connor Storrie, the best cast and crew and writers in this business, she couldn't be more grateful, this is a true honor and a dream come true, she especially thanked Lorne, she will never forget the night and she thanked everyone for having her here to be back on the show. Once again, the guest was cutoff before the credits could roll. The goodnights and credits were fixed in the reruns.}}
+|}
+
+{{Box episode
+|Prev = [[April 11, 2026]]
+|Next = [[May 9, 2026]]
+}}
+[[Category:Episodes]]
+[[Category:Season 51]]
+[[Category:Season 51 Episodes]]
+
 
 
 

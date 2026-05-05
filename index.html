@@ -458,6 +458,82 @@ input, textarea, select { font: inherit; color: inherit; }
   background: transparent;
   border: 1px solid var(--ink-4);
 }
+.legend-compact {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.legend-compact strong { color: var(--ink); font-weight: 700; }
+
+/* Musical guest — outside sketch rankings */
+.musical-guest-card {
+  margin: 0 44px 28px;
+  padding: 20px 24px;
+  border: 2px solid var(--rule);
+  background: var(--paper-2);
+  max-width: 720px;
+}
+.musical-guest-card h3 {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+.musical-guest-card .mg-name {
+  font-family: var(--f-display);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.musical-guest-card .mg-songs {
+  font-family: var(--f-body);
+  font-size: 15px;
+  color: var(--ink-2);
+  margin-bottom: 18px;
+  line-height: 1.45;
+}
+.musical-guest-card .mg-songs li { margin-left: 1.1em; }
+.musical-guest-card .mg-prompt {
+  font-family: var(--f-body);
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: var(--ink);
+}
+.musical-guest-card .mg-note {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 12px;
+}
+.mg-toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.mg-toggle-row button {
+  font-family: var(--f-meta);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.mg-toggle-row button:hover { background: var(--ink-2); color: var(--paper); border-color: var(--ink-2); }
+.mg-toggle-row button.active-yes { background: var(--sage); border-color: var(--sage); color: var(--paper); }
+.mg-toggle-row button.active-no { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 
 /* ========== SKETCHES AREA ========== */
 .sketches-area {
@@ -1547,7 +1623,8 @@ input, textarea, select { font: inherit; color: inherit; }
     font-size: 10px;
     letter-spacing: 0.22em;
   }
-  .rating-legend { display: none; }
+  .rating-legend { justify-content: flex-start; margin-top: 6px; }
+  .musical-guest-card { margin-left: 14px; margin-right: 14px; }
 
   /* Sketch entries: single column stack */
   .sketch-entry {
@@ -1752,7 +1829,7 @@ input, textarea, select { font: inherit; color: inherit; }
           <span class="footer-btn-glyph">↑</span> Import
         </button>
       </div>
-      <div class="footer-note">Saved locally · no backend yet</div>
+      <div class="footer-note">Saved locally · Import merges old exports (v2–v4) by sketch id</div>
     </div>
   </aside>
   <div class="sidebar-overlay" onclick="toggleSidebar(false)" aria-hidden="true"></div>
@@ -1771,12 +1848,8 @@ input, textarea, select { font: inherit; color: inherit; }
           <button class="view-tab active" onclick="setView('episode')">The Episode</button>
           <button class="view-tab" onclick="setView('ranked')">The Best of</button>
         </div>
-        <div class="rating-legend" title="1 = offensive · 2 = weak · 3 = pretty good · 4 = really good · 5 = classic">
-          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span></span> Offensive</span>
-          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span><span class="ldot"></span><span class="ldot empty"></span><span class="ldot empty"></span><span class="ldot empty"></span></span> Weak</span>
-          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot empty"></span><span class="ldot empty"></span></span> Pretty good</span>
-          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot empty"></span></span> Really good</span>
-          <span class="legend-item"><span class="legend-dots"><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span><span class="ldot"></span></span> Classic</span>
+        <div class="rating-legend" title="Tap a dot to set or clear.">
+          <span class="legend-compact">★ <strong>1</strong> = bad · <strong>5</strong> = great</span>
         </div>
       </div>
     </header>
@@ -1786,7 +1859,7 @@ input, textarea, select { font: inherit; color: inherit; }
 
 <script>
 const CATS = { cold:'Cold Open', pre:'Pre-tape', update:'Weekend Update', musical:'Musical Performance', live:'Live Sketch' };
-const RATING_LABELS = { 0:'', 1:'Downright offensive', 2:'Below average', 3:'Pretty good — nothing special', 4:'Really good — short of the pantheon', 5:'Outright classic' };
+const STORAGE_KEYS = ['snl51_v3', 'snl51_v2'];
 
 const BASE_EPISODES = [
   { id:"ep1", ep:"S51E01", date:"Oct 4, 2025", host:"Bad Bunny", musical:"Doja Cat", sketches:[
@@ -2072,7 +2145,22 @@ const BASE_EPISODES = [
     { id:"s17_13", title:"Beastomorphs", cat:"pre", cast:"Marcello Hernández, Sarah Sherman, Tommy Brennan, Veronika Slowikowska, Colman Domingo", notes:"", rating:0, fav:false, summary:"A group of teens (Sarah Sherman, Marcello Hernández, Tommy Brennan, Veronika Slowikowska) transform into animals to battle an evil alien (Colman Domingo)." },
     { id:"s17_14", title:"Goodbyes and Closing Credits", cat:"live", cast:"Colman Domingo", notes:"", rating:0, fav:false, summary:"Colman Domingo says tonight is for all the little inner kids in the city and small corners of Brazil, tonight is for the dreamers and the people who light into the world, especially Lorne Michaels and his beautiful cast and crew, he thanked to the band and everyone who came, to come together in a dark room and just laugh, when they need more left in the world, this has been an epic night and they want to send them away with a big ol kiss and love and love on each other. He even thanked to every sing one of them in this country. Colman Domingo's words of encouragement for inner city kids were cut off mid-sentence for a commercial for \"The Voice.\" However, they were made available online shortly after the episode aired." },
   ]},
-  { id:"ep18", ep:"S51E18", date:"May 2, 2026", host:"Olivia Rodrigo", musical:"Olivia Rodrigo", sketches:[
+  { id:"ep18", ep:"S51E18 (#1006)", date:"May 2, 2026", host:"Olivia Rodrigo", musical:"Olivia Rodrigo", sketches:[
+    { id:"s18_1", title:"Hegseth and Patel Iran Press Briefing Cold Opening", cat:"cold", cast:"Colin Jost, Aziz Ansari, Ashley Padilla, Ben Marshall, Marcello Hernández, Sarah Sherman, Kam Patterson, Jeremy Culhane, Tommy Brennan", notes:"", rating:0, fav:false, summary:"Pete Hegseth (Colin Jost) and Kash Patel (Aziz Ansari) answer reporters' questions about the war in Iran. With Ashley Padilla, Ben Marshall, Marcello Hernandez, Sarah Sherman, Kam Patterson, Jeremy Culhane, and Tommy Brennan." },
+    { id:"s18_2", title:"Opening Montage", cat:"pre", cast:"Olivia Rodrigo", notes:"", rating:0, fav:false, summary:"The seventeenth \"Behind the Scenes\" footage set changes from the Cold Opening to the Monologue for Season 51 of Saturday Night Live presented by T-Mobile. Also, the musical guests/hosts introductions' clips of the opening montage were changed to one again, only for this episode (one clip for host and musical guest Olivia Rodrigo)," },
+    { id:"s18_3", title:"Monologue by Olivia Rodrigo", cat:"live", cast:"Olivia Rodrigo", notes:"", rating:0, fav:false, summary:"Hosting for the first time, and three-time musical guest Olivia Rodrigo talks about getting her start as a child actor before performing a new song about a big event in her adult life." },
+    { id:"s18_4", title:"Edge of Destiny", cat:"live", cast:"Olivia Rodrigo, Chloe Fineman, Marcello Hernández, Andrew Dismukes, Mikey Day, Sarah Sherman, Kenan Thompson", notes:"", rating:0, fav:false, summary:"A classic TV channel airs an episode of an '80s soap opera. With Olivia Rodrigo, Chloe Fineman, Marcello Hernandez, Andrew Dismukes, Mikey Day, Sarah Sherman, and Kenan Thompson." },
+    { id:"s18_5", title:"My Room", cat:"pre", cast:"Olivia Rodrigo, Mikey Day, Sarah Sherman, James Austin Johnson", notes:"", rating:0, fav:false, summary:"A teenage girl (Olivia Rodrigo) performs a song about her perfect bedroom. With Mikey Day, Sarah Sherman, and James Austin Johnson." },
+    { id:"s18_6", title:"Shop TV: Lava Cake", cat:"live", cast:"Mikey Day, Ashley Padilla, Olivia Rodrigo, James Austin Johnson", notes:"", rating:0, fav:false, summary:"Hosts Rhett & Bev (Mikey Day, Ashley Padilla) welcome a baker (Olivia Rodrigo) to show off her famous lava cake. With James Austin Johnson." },
+    { id:"s18_7", title:"Next Episode Commercial Bumper", cat:"pre", cast:"", notes:"", rating:0, fav:false, summary:"Matt Damon will return to host SNL for the third time on May 9th. The Academy Award winner next stars in Christopher Nolan's \"The Odyssey,\" in theaters July 17. Noah Kahan will perform as musical guest for the second time." },
+    { id:"s18_8", title:"My Ex", cat:"live", cast:"Olivia Rodrigo, Ben Marshall, Tommy Brennan, Ashley Padilla, Marcello Hernández", notes:"", rating:0, fav:false, summary:"Two exes (Olivia Rodrigo, Ben Marshall) try to make each other jealous by pretending to date other people (Tommy Brennan, Ashley Padilla). With Marcello Hernandez." },
+    { id:"s18_9", title:"Olivia Rodrigo performed \"drop dead\". Debbie Harry introduces Rodrigo's first performance", cat:"musical", cast:"Olivia Rodrigo, Debbie Harry", notes:"", rating:0, fav:false, summary:"Host and Musical Guest Olivia Rodrigo performed \"drop dead\" on Saturday Night Live. Olivia's performance was introduced by Debbie Harry, the lead singer of the new wave band Blondie. Flash warning, if you're sensitive to flashing lights. The upbeat, scathing lead single from her upcoming album." },
+    { id:"s18_10", title:"Weekend Update with Colin Jost and Michael Che", cat:"update", cast:"Colin Jost, Michael Che, Veronika Slowikowska, Chloe Fineman, Kam Patterson", notes:"", rating:0, fav:false, summary:"Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like King Charles meeting New York City mayor Zohran Mamdani and a woman damaging a statue in Italy while trying to touch its genitals. With guests, Alix Earle (Veronika Slowikowska) and Alex Cooper (Chloe Fineman) stop by Weekend Update to discuss their feud, and Kam Patterson stops by Weekend Update to discuss Megan Thee Stallion breaking up with Klay Thompson." },
+    { id:"s18_11", title:"Busted", cat:"live", cast:"Marcello Hernández, Olivia Rodrigo, James Austin Johnson, Jane Wickline, Chloe Fineman, Kenan Thompson", notes:"", rating:0, fav:false, summary:"A man (Marcello Hernández) sings a song about busting his fiancé (Olivia Rodrigo) for cheating. With James Austin Johnson, Jane Wickline, Chloe Fineman, and Kenan Thompson." },
+    { id:"s18_12", title:"Olivia Rodrigo performed \"begged\". Connor Storrie introduces Rodrigo's second performance", cat:"musical", cast:"Olivia Rodrigo, Connor Storrie", notes:"", rating:0, fav:false, summary:"Host and Musical Guest Olivia Rodrigo performed \"begged\" on Saturday Night Live. Olivia's performance was introduced by Heated Rivalry actor Connor Storrie. A stripped-down, more emotional, and unreleased track." },
+    { id:"s18_13", title:"Rasta Driver", cat:"live", cast:"Olivia Rodrigo, Veronika Slowikowska, Andrew Dismukes", notes:"", rating:0, fav:false, summary:"Two party girls (Olivia Rodrigo, Veronika Slowikowska) experience an unusual moment with their driver (Andrew Dismukes)." },
+    { id:"s18_14", title:"Home Security Ad", cat:"pre", cast:"Veronika Slowikowska, Tommy Brennan, Ben Marshall, Olivia Rodrigo, Mikey Day, Jane Wickline, Sarah Sherman, Ashley Padilla, Andrew Dismukes, Marcello Hernández, Chloe Fineman, Jeremy Culhane, Kam Patterson", notes:"", rating:0, fav:false, summary:"A commercial advertises the first home security system designed to help identify intruders by producing viral footage. With Veronika Slowikowska, Tommy Brennan, Ben Marshall, Olivia Rodrigo, Mikey Day, Jane Wickline, Sarah Sherman, Ashley Padilla, Andrew Dismukes, Marcello Hernandez, Chloe Fineman, Jeremy Culhane, and Kam Patterson." },
+    { id:"s18_15", title:"Goodbyes and Closing Credits", cat:"live", cast:"Olivia Rodrigo", notes:"", rating:0, fav:false, summary:"Olivia Rodrigo thanked Aziz Ansari, Debbie Harry, and Connor Storrie, the best cast and crew and writers in this business, she couldn't be more grateful, this is a true honor and a dream come true, she especially thanked Lorne, she will never forget the night and she thanked everyone for having her here to be back on the show. Once again, the guest was cutoff before the credits could roll. The goodnights and credits were fixed in the reruns." },
   ]},
   { id:"ep19", ep:"S51E19", date:"May 9, 2026", host:"Matt Damon", musical:"Noah Kahan", sketches:[
   ]},
@@ -2091,12 +2179,80 @@ let dashDisplay = 'standard';
 let dashSearch = '';
 let dashShowSummary = {};
 
+function cloneBaselineEpisodes() {
+  return JSON.parse(JSON.stringify(BASE_EPISODES));
+}
+
+function mergeSketchFromSaved(baseSketch, savedSketch) {
+  const out = { ...baseSketch };
+  if (!savedSketch) return out;
+  ['title', 'cat', 'cast', 'notes', 'summary'].forEach(f => {
+    if (savedSketch[f] !== undefined && savedSketch[f] !== null && savedSketch[f] !== '') out[f] = savedSketch[f];
+  });
+  if (typeof savedSketch.rating === 'number') out.rating = savedSketch.rating;
+  if (typeof savedSketch.fav === 'boolean') out.fav = savedSketch.fav;
+  if (savedSketch.updateRatings && typeof savedSketch.updateRatings === 'object') {
+    out.updateRatings = { ...savedSketch.updateRatings };
+  }
+  return out;
+}
+
+/** Merge saved user data onto the canonical baseline so new sketches/episodes from the app ship appear after refresh. */
+function mergeEpisodesArray(stored, baseline) {
+  if (!Array.isArray(stored) || !stored.length) return baseline;
+  const byId = new Map(stored.map(e => [e.id, e]));
+  return baseline.map(baseEp => {
+    const se = byId.get(baseEp.id);
+    if (!se) {
+      return { ...baseEp, sketches: baseEp.sketches.map(sk => ({ ...sk })) };
+    }
+    const sketchById = new Map((se.sketches || []).map(sk => [sk.id, sk]));
+    const mergedSketches = baseEp.sketches.map(bsk => mergeSketchFromSaved(bsk, sketchById.get(bsk.id)));
+    const baseSketchIds = new Set(baseEp.sketches.map(sk => sk.id));
+    for (const sk of se.sketches || []) {
+      if (!baseSketchIds.has(sk.id)) mergedSketches.push({ ...sk });
+    }
+    let musicalMemorable = null;
+    if (se.musicalMemorable === true) musicalMemorable = true;
+    else if (se.musicalMemorable === false) musicalMemorable = false;
+    return {
+      ...baseEp,
+      ep: se.ep != null ? se.ep : baseEp.ep,
+      date: se.date != null ? se.date : baseEp.date,
+      host: se.host != null ? se.host : baseEp.host,
+      musical: se.musical != null ? se.musical : baseEp.musical,
+      musicalMemorable,
+      sketches: mergedSketches
+    };
+  });
+}
+
 function loadData() {
-  try { const s = localStorage.getItem('snl51_v3'); if (s) episodes = JSON.parse(s); } catch(e) {}
+  const baseline = cloneBaselineEpisodes();
+  let raw = null;
+  for (const key of STORAGE_KEYS) {
+    try {
+      raw = localStorage.getItem(key);
+      if (raw) break;
+    } catch (e) {}
+  }
+  if (!raw) {
+    episodes = baseline;
+    return;
+  }
+  try {
+    const parsed = JSON.parse(raw);
+    const arr = Array.isArray(parsed) ? parsed : (parsed && parsed.episodes);
+    episodes = mergeEpisodesArray(arr, baseline);
+  } catch (e) {
+    episodes = baseline;
+  }
 }
+
 function saveData() {
-  try { localStorage.setItem('snl51_v3', JSON.stringify(episodes)); } catch(e) {}
+  try { localStorage.setItem('snl51_v3', JSON.stringify(episodes)); } catch (e) {}
 }
+
 function getEp() { return episodes.find(e => e.id === activeEpId); }
 
 function isFlowSketch(s) {
@@ -2106,29 +2262,56 @@ function isFlowSketch(s) {
   return true;
 }
 
+/** Sketches shown as rateable cards (excludes bumpers, goodnights, montage, and musicals). */
+function isEpisodeSketchCard(s) {
+  return isFlowSketch(s) && s.cat !== 'musical';
+}
+
 function isComedyScoreSketch(s) {
   return isFlowSketch(s) && s.cat !== 'musical';
 }
 
+function deskFallbackFromCast(s, pieces) {
+  const extras = (s.cast || '').split(',').map(x => x.trim()).filter(Boolean)
+    .filter(n => !/^Colin Jost$/i.test(n) && !/^Michael Che$/i.test(n));
+  let n = pieces.length;
+  extras.forEach(name => {
+    pieces.push({ id: 'desk_' + n, title: name + ' — desk', cast: name, summary: '' });
+    n++;
+  });
+}
+
 function getUpdatePieces(s) {
   if (s.cat !== 'update') return [];
-  const summary = s.summary || '';
+  const summary = (s.summary || '').trim();
+  const gm = summary.match(/\bWith guests?,?\s*(.+)$/is);
+  const newsBody = gm ? summary.slice(0, gm.index).trim() : summary;
+
   const pieces = [{
     id: 'news',
-    title: 'Jost & Che news-of-the-week jokes',
+    title: 'Jost & Che — news jokes',
     cast: 'Colin Jost, Michael Che',
-    summary: summary.split(/With guests,/i)[0].trim()
+    summary: (newsBody.replace(/\s*With guests?,?\s*$/i, '').trim() || newsBody)
   }];
 
-  const guestText = summary.split(/With guests,/i)[1] || '';
-  const re = /([^,.]+?(?:\([^)]+\))?)\s+stops? by Weekend Update to discuss(?:ed)?\s+(.+?)(?=,\s*(?:and\s+)?[^,.]+?(?:\([^)]+\))?\s+stops? by Weekend Update to discuss(?:ed)?|\.|$)/gi;
-  let match;
-  while ((match = re.exec(guestText)) !== null) {
-    const title = match[1].replace(/^and\s+/i, '').trim();
-    const desc = match[2].trim();
+  const blob = gm ? gm[1].trim() : '';
+  if (!blob) {
+    if (pieces.length === 1) deskFallbackFromCast(s, pieces);
+    return pieces;
+  }
+
+  const re = /(.+?)\s+stops?\s+by\s+Weekend Update\s+to\s+discuss(?:ed)?\s+/gi;
+  const matches = [...blob.matchAll(re)];
+  for (let i = 0; i < matches.length; i++) {
+    const title = matches[i][1].replace(/^(?:,\s*|and\s+)/i, '').trim();
+    const descStart = matches[i].index + matches[i][0].length;
+    const descEnd = i + 1 < matches.length ? matches[i + 1].index : blob.length;
+    let desc = blob.slice(descStart, descEnd).trim();
+    desc = desc.replace(/,\s*and\s+former\s+Weekend\s+Update\s+anchors[\s\S]*$/i, '')
+      .replace(/\s+and\s+former\s+Weekend\s+Update\s+anchors[\s\S]*$/i, '').trim();
     if (title) {
       pieces.push({
-        id: `desk_${pieces.length}`,
+        id: 'desk_' + (i + 1),
         title,
         cast: updatePieceCast(title),
         summary: desc
@@ -2136,14 +2319,42 @@ function getUpdatePieces(s) {
     }
   }
 
-  if (pieces.length === 1) {
-    (s.cast || '').split(',').map(name => name.trim()).filter(Boolean).forEach(name => {
-      if (!['Colin Jost','Michael Che'].includes(name)) {
-        pieces.push({ id: `desk_${pieces.length}`, title: `${name} desk piece`, cast: name, summary: '' });
-      }
+  const reunion = blob.match(/,?\s*and\s+former\s+Weekend\s+Update\s+anchors\s+([\s\S]+?)(?:\.(?:\sPulling|\sAmy)|$)/i);
+  if (reunion && !pieces.some(p => /joke[- ]?off|reunite\s+and\s+take\s+on/i.test((p.summary || '') + (p.title || '')))) {
+    pieces.push({
+      id: 'desk_reunion',
+      title: 'WU alumni — joke-off vs. Jost & Che',
+      cast: 'Amy Poehler, Tina Fey, Seth Meyers, Colin Jost, Michael Che',
+      summary: reunion[0].replace(/^\s*,?\s*and\s+/i, '').trim()
     });
   }
+
+  if (pieces.length === 1) deskFallbackFromCast(s, pieces);
   return pieces;
+}
+
+function extractSongTitleFromMusicalTitle(title) {
+  const t = title || '';
+  let m = t.match(/performed\s+["'“]([^"'”]+)["'”]/i);
+  if (m) return m[1].trim();
+  m = t.match(/performs\s+['"'“]([^'"”]+)['"'”]/i);
+  if (m) return m[1].trim();
+  m = t.match(/performed\s+([^—.]+?)(?:\.|\s+—|\s*$)/i);
+  if (m) return m[1].trim();
+  return t.replace(/^[^:]+:\s*/i, '').trim() || t;
+}
+
+function getMusicalSongLabels(ep) {
+  return (ep.sketches || []).filter(s => s.cat === 'musical').map(s => extractSongTitleFromMusicalTitle(s.title)).filter(Boolean);
+}
+
+function setMusicalMemorable(epId, val) {
+  const ep = episodes.find(e => e.id === epId);
+  if (!ep) return;
+  ep.musicalMemorable = val;
+  saveData();
+  renderSidebar();
+  renderEpisode();
 }
 
 function updatePieceCast(title) {
@@ -2214,7 +2425,7 @@ document.addEventListener('keydown', e => {
 function exportData() {
   const payload = {
     app: 'snl-season-51-tracker',
-    version: 3,
+    version: 4,
     exportedAt: new Date().toISOString(),
     episodes: episodes
   };
@@ -2251,11 +2462,11 @@ function importData() {
       const totalSketches = eps.reduce((n, ep) => n + (ep.sketches ? ep.sketches.length : 0), 0);
       const ok = confirm(
         `Import ${eps.length} episodes (${totalSketches} sketches)?\n\n` +
-        `This will OVERWRITE your current ratings, favourites, and notes. ` +
-        `Consider exporting first if you want a backup.`
+        `Saved ratings, favourites, notes, Weekend Update piece ratings, and “memorable musical guest” answers will be merged onto the current episode list (by sketch id). ` +
+        `New sketches from a fresh app build are kept. Consider exporting first if you want a full backup.`
       );
       if (!ok) return;
-      episodes = eps;
+      episodes = mergeEpisodesArray(eps, cloneBaselineEpisodes());
       if (!episodes.find(e => e.id === activeEpId)) activeEpId = episodes[0] && episodes[0].id;
       saveData();
       renderSidebar();
@@ -2292,11 +2503,11 @@ function toRoman(n) {
 
 function renderSidebar() {
   document.getElementById('ep-list').innerHTML = episodes.map((ep, i) => {
-    const flowSketches = ep.sketches.filter(isFlowSketch);
-    const total = flowSketches.length;
-    const rated = flowSketches.filter(s => s.cat !== 'update' && s.rating > 0).length
-      + flowSketches.filter(s => s.cat === 'update').reduce((n, s) => n + getUpdatePieces(s).filter(piece => getUpdateRating(s, piece.id) > 0).length, 0);
-    const favs = flowSketches.filter(s => s.fav).length;
+    const cardSketches = ep.sketches.filter(isEpisodeSketchCard);
+    const total = cardSketches.length;
+    const rated = cardSketches.filter(s => s.cat !== 'update' && s.rating > 0).length
+      + cardSketches.filter(s => s.cat === 'update').reduce((n, s) => n + getUpdatePieces(s).filter(piece => getUpdateRating(s, piece.id) > 0).length, 0);
+    const favs = cardSketches.filter(s => s.fav).length;
     const score = episodeScore(ep);
     const num = String(i + 1).padStart(2, '0');
 
@@ -2339,8 +2550,24 @@ function renderEpisode() {
   const score = episodeScore(ep);
   const ratedCount = episodeRatedCount(ep);
   const ratable = episodeRatableCount(ep);
-  const flowSketches = ep.sketches.filter(isFlowSketch);
-  const total = flowSketches.length;
+  const cardSketches = ep.sketches.filter(isEpisodeSketchCard);
+  const total = cardSketches.length;
+  const songLabels = getMusicalSongLabels(ep);
+  const mm = ep.musicalMemorable;
+  const musicalHtml = total > 0 && (songLabels.length || (ep.musical && String(ep.musical).trim()))
+    ? `<section class="musical-guest-card" aria-label="Musical guest (not part of episode score)">
+        <h3>Musical guest</h3>
+        <div class="mg-name">${escHtml(ep.musical || 'TBA')}</div>
+        ${songLabels.length ? `<ul class="mg-songs">${songLabels.map(t => `<li>${escHtml(t)}</li>`).join('')}</ul>` : ''}
+        <p class="mg-prompt">Was this musical guest memorable?</p>
+        <div class="mg-toggle-row">
+          <button type="button" class="${mm === true ? 'active-yes' : ''}" onclick="setMusicalMemorable('${ep.id}', true)">Yes</button>
+          <button type="button" class="${mm === false ? 'active-no' : ''}" onclick="setMusicalMemorable('${ep.id}', false)">No</button>
+          <button type="button" onclick="setMusicalMemorable('${ep.id}', null)">Clear</button>
+        </div>
+        <p class="mg-note">For your own notes only — does not affect running score or Best Of rankings.</p>
+      </section>`
+    : '';
 
   // Hero block: kicker · big host display · italic dek · running score block
   hero.innerHTML = `
@@ -2360,14 +2587,12 @@ function renderEpisode() {
   </div>`;
   hero.insertAdjacentHTML('beforeend', scoreBlock);
 
-  const cards = flowSketches.map((s, idx) => {
+  const cards = cardSketches.map((s, idx) => {
     const rankNum = String(idx + 1).padStart(2, '0');
     const isUpdate = s.cat === 'update';
     const updatePieces = isUpdate ? getUpdatePieces(s) : [];
     const displayRating = isUpdate ? Math.max(0, ...updatePieces.map(piece => getUpdateRating(s, piece.id))) : s.rating;
     const rc = displayRating === 5 ? 'rated-5' : displayRating === 4 ? 'rated-4' : '';
-    const label = RATING_LABELS[s.rating] || (s.cat === 'musical' ? 'Musical performance' : 'Unrated');
-    const labelCls = s.rating ? 'has-rating' : '';
     const updateHtml = isUpdate ? `<div class="wu-pieces">
       ${updatePieces.map(piece => {
         const pieceRating = getUpdateRating(s, piece.id);
@@ -2396,13 +2621,11 @@ function renderEpisode() {
         <div class="sketch-meta-row">
           <span class="cat-pill cat-${s.cat}">${CATS[s.cat]||s.cat}</span>
           ${s.fav ? '<span class="fav-badge">♥ Favorite</span>' : ''}
-          ${s.cat === 'musical' ? '<span class="fav-badge">Score-neutral</span>' : ''}
         </div>
         ${isUpdate ? updateHtml : `<div class="rating-row">
           <div class="rating-dots">
-            ${[1,2,3,4,5].map(n=>`<button class="rating-dot ${s.rating>=n?'filled':''}" onclick="setRating('${ep.id}','${s.id}',${n})" aria-label="Rate ${n} out of 5" title="Rate ${n}"></button>`).join('')}
+            ${[1,2,3,4,5].map(n=>`<button class="rating-dot ${s.rating>=n?'filled':''}" onclick="setRating('${ep.id}','${s.id}',${n})" aria-label="Rate ${n} out of 5 (${n === 1 ? 'bad' : n === 5 ? 'great' : 'in between'})" title="${n}"></button>`).join('')}
           </div>
-          <span class="rating-label ${labelCls}">${label}</span>
         </div>`}
         <div class="sketch-fields">
           <div class="sketch-field">
@@ -2452,7 +2675,7 @@ function renderEpisode() {
     const metaBits = [];
     if (nextEp.date) metaBits.push(escHtml(nextEp.date));
     if (upcoming) metaBits.push('Not yet aired');
-    else if (nextEp.sketches) metaBits.push(`${nextEp.sketches.length} sketches`);
+    else if (nextEp.sketches) metaBits.push(`${nextEp.sketches.filter(isEpisodeSketchCard).length} sketches`);
     pageTurnHtml = `<button class="next-issue${upcoming ? ' upcoming' : ''}" onclick="selectEp('${nextEp.id}')" title="Go to the next episode">
       <div class="next-issue-kicker">Next Issue →</div>
       <div class="next-issue-num">No. ${String(idx + 2).padStart(2,'0')}</div>
@@ -2466,7 +2689,7 @@ function renderEpisode() {
     </div>`;
   }
 
-  content.innerHTML = `<div class="sketches-area">${emptyMsg}${cards}<div class="add-sketch">${addHtml}</div>${pageTurnHtml}</div>`;
+  content.innerHTML = `<div class="sketches-area">${emptyMsg}${cards}<div class="add-sketch">${addHtml}</div>${musicalHtml}${pageTurnHtml}</div>`;
   if (showAddForm) setTimeout(() => { const t = document.getElementById('new-title'); if (t) t.focus(); }, 30);
 }
 
@@ -2497,7 +2720,7 @@ function renderRanked() {
 function getDashItems() {
   const all = [];
   episodes.forEach((ep, epIndex) => ep.sketches.forEach((s, sketchIndex) => {
-    if (!isFlowSketch(s)) return;
+    if (!isFlowSketch(s) || s.cat === 'musical') return;
     if (s.cat === 'update') {
       getUpdatePieces(s).forEach((piece, pieceIndex) => {
         const rating = getUpdateRating(s, piece.id);
@@ -2586,7 +2809,7 @@ function buildDash() {
     <div class="dash-row-value">${fmtAvg(row.avg)} · ${row.count}</div>
   </div>`).join('') : '<div class="dash-row-label">No cast ratings yet</div>';
 
-  const catHtml = Object.entries(CATS).map(([key, label]) => {
+  const catHtml = Object.entries(CATS).filter(([key]) => key !== 'musical').map(([key, label]) => {
     const catRated = rated.filter(s => s.cat === key);
     const avg = avgRating(catRated);
     return `<div class="dash-cat-row">
@@ -2635,7 +2858,6 @@ function buildControls() {
       ${controlButton('filter','cold','Cold Opens')}
       ${controlButton('filter','pre','Pre-tapes')}
       ${controlButton('filter','update','Weekend Update')}
-      ${controlButton('filter','musical','Musical')}
       ${controlButton('filter','live','Live')}
     </div>
     <div class="control-row">
@@ -2692,7 +2914,7 @@ function filterDashItems(items) {
 }
 
 function groupLabel(s) {
-  if (dashGroup === 'rating') return s.rating > 0 ? `${s.rating}★ · ${RATING_LABELS[s.rating]}` : 'Unrated Favorites';
+  if (dashGroup === 'rating') return s.rating > 0 ? `${s.rating}★` : 'Unrated Favorites';
   if (dashGroup === 'category') return CATS[s.cat] || s.cat;
   if (dashGroup === 'host') return s.epHost;
   return '';
@@ -2725,7 +2947,7 @@ function buildList(items) {
     const notesHtml = dashDisplay !== 'compact' && s.notes ? `<div class="rank-notes">"${escHtml(s.notes)}"</div>` : '';
     const summaryHtml = showSummary && s.summary ? `<div class="rank-summary">${escHtml(s.summary)}</div>` : '';
     const toggleHtml = hasSummaryToggle ? `<button class="summary-toggle" onclick="toggleDashSummary('${s.id}')">${showSummary ? '▲ hide summary' : '▼ summary'}</button>` : '';
-    const labelHtml = dashDisplay === 'detailed' ? `<div class="rank-label">${RATING_LABELS[s.rating] || 'Unrated favorite'}</div>` : '';
+    const labelHtml = '';
 
     return `<article class="rank-entry ${dashDisplay} ${rankable ? '' : 'has-rankless'} ${s.fav ? 'is-fav' : ''} ${topCls(i)}">
       ${rankNum}
