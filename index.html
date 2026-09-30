@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SNL · Season 51 — A Running Catalogue</title>
+<title>SNL · A Running Catalogue</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..900,0..100,0..1;1,9..144,400..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Archivo+Narrow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* =========================================================================
-   SNL Season 51 Tracker — editorial magazine redesign
+   SNL sketch tracker — editorial magazine, multiple seasons
    Typography: Fraunces (display), Newsreader (body), Archivo Narrow (meta)
    ========================================================================= */
 
@@ -117,6 +117,32 @@ input, textarea, select { font: inherit; color: inherit; }
   color: var(--ink-3);
   margin-top: 4px;
 }
+.season-switch {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+.season-tab {
+  font-family: var(--f-meta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--ink);
+  padding: 6px 11px;
+  cursor: pointer;
+  color: var(--ink);
+  line-height: 1;
+}
+.season-tab:hover:not(.active) { background: rgba(26,20,16,0.08); }
+.season-tab.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+.mobile-season-switch { display: none; }
 
 .ep-list { overflow-y: auto; flex: 1; }
 .ep-list::before {
@@ -1529,6 +1555,17 @@ input, textarea, select { font: inherit; color: inherit; }
   .drawer-close:hover { color: var(--accent); border-color: var(--accent); }
 
   /* Mobile top bar, stays sticky when scrolling sketches */
+  .mobile-season-switch {
+    display: flex;
+    margin-top: 0;
+    margin-left: auto;
+    gap: 4px;
+  }
+  .mobile-season-switch .season-tab {
+    padding: 7px 9px;
+    letter-spacing: 0.12em;
+  }
+
   .mobile-bar {
     display: flex;
     align-items: center;
@@ -1814,9 +1851,10 @@ input, textarea, select { font: inherit; color: inherit; }
     <div class="sidebar-header">
       <button class="drawer-close" onclick="toggleSidebar(false)" aria-label="Close episodes menu" title="Close">✕</button>
       <div class="sidebar-kicker">Saturday Night Live</div>
-      <div class="sidebar-masthead">S<span class="amp">&amp;</span>51</div>
-      <div class="sidebar-dek">A running catalogue of the Fifty-first season</div>
-      <div class="sidebar-years">MMXXV — MMXXVI</div>
+      <div class="sidebar-masthead">S<span class="amp">&amp;</span><span id="season-num">52</span></div>
+      <div class="sidebar-dek" id="season-dek">A running catalogue of the Fifty-second season</div>
+      <div class="sidebar-years" id="season-years">MMXXVI — MMXXVII</div>
+      <div class="season-switch" id="season-switch" role="tablist" aria-label="Season"></div>
     </div>
     <nav class="ep-list" id="ep-list"></nav>
     <div class="sidebar-footer">
@@ -1829,7 +1867,7 @@ input, textarea, select { font: inherit; color: inherit; }
           <span class="footer-btn-glyph">↑</span> Import
         </button>
       </div>
-      <div class="footer-note">Saved locally · Import merges old exports (v2–v4) by sketch id</div>
+      <div class="footer-note">Saved locally · Each season keeps its own ratings. Import merges old exports by sketch id.</div>
     </div>
   </aside>
   <div class="sidebar-overlay" onclick="toggleSidebar(false)" aria-hidden="true"></div>
@@ -1839,8 +1877,8 @@ input, textarea, select { font: inherit; color: inherit; }
         <button class="hamburger" onclick="toggleSidebar()" aria-label="Open episodes menu" title="Episodes">
           <span></span><span></span><span></span>
         </button>
-        <div class="mobile-masthead">S<span class="amp">&amp;</span>51</div>
-        <div class="mobile-bar-spacer"></div>
+        <div class="mobile-masthead">S<span class="amp">&amp;</span><span id="mobile-season-num">52</span></div>
+        <div class="season-switch mobile-season-switch" id="mobile-season-switch" role="tablist" aria-label="Season"></div>
       </div>
       <div class="hero" id="hero-area"></div>
       <div class="header-right">
@@ -1859,7 +1897,6 @@ input, textarea, select { font: inherit; color: inherit; }
 
 <script>
 const CATS = { cold:'Cold Open', pre:'Pre-tape', update:'Weekend Update', musical:'Musical Performance', live:'Live Sketch' };
-const STORAGE_KEYS = ['snl51_v3', 'snl51_v2'];
 
 const BASE_EPISODES = [
   { id:"ep1", ep:"S51E01", date:"Oct 4, 2025", host:"Bad Bunny", musical:"Doja Cat", sketches:[
@@ -2294,6 +2331,11 @@ const UPDATE_PIECES_BY_SKETCH_ID = {
     { id:"desk_1", title:"Mr. On Blast", cast:"Jeremy Culhane", summary:"Mr. On Blast stops by Weekend Update to speak his mind on topics like AI, the stock market and more." },
     { id:"desk_joke_swap", title:"Jost & Che — joke swap", cast:"Colin Jost, Michael Che", summary:"Colin Jost and Michael Che make each other read jokes they’ve never seen before to close out season 51." },
   ],
+  s52_11: [
+    { id:"news", title:"Jost & Che — news jokes", cast:"Colin Jost, Michael Che", summary:"Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like the White House launching Trump TV and critics calling out Hanukkah Barbie appearing to have a larger nose." },
+    { id:"desk_1", title:"Anthropic CEO Dario Amodei", cast:"Jane Wickline", summary:"Anthropic CEO Dario Amodei stops by Weekend Update to discuss A.I.'s threat to humanity." },
+    { id:"desk_2", title:"Tucker Carlson", cast:"Jeremy Culhane", summary:"Tucker Carlson stops by Weekend Update to review the films of summer 2026." },
+  ],
 };
 
 const CUT_FOR_TIME_SKETCHES_BY_EPISODE = {
@@ -2348,8 +2390,41 @@ BASE_EPISODES.forEach(ep => {
   });
 });
 
-let episodes = JSON.parse(JSON.stringify(BASE_EPISODES));
-let activeEpId = 'ep1';
+const SEASONS = [
+  { id:'51', number:51, ordinal:'Fifty-first', years:'MMXXV — MMXXVI', dek:'A running catalogue of the Fifty-first season' },
+  { id:'52', number:52, ordinal:'Fifty-second', years:'MMXXVI — MMXXVII', dek:'A running catalogue of the Fifty-second season' },
+];
+
+const BASE_S52 = [
+  { id:"s52e1", ep:"S52E01 (#1009)", date:"Sep 26, 2026", host:"Jalen Brunson", musical:"Katseye", sketches:[
+    { id:"s52_1", title:"Trump Mamdani Cold Opening", cat:"cold", cast:"Ramy Youssef, James Austin Johnson, Ashley Padilla, Veronika Slowikowska", notes:"", rating:0, fav:false, summary:"New York City Mayor Zohran Mamdani (Ramy Youssef) gets a visit from President Trump (James Austin Johnson) and Natalie Harp (Ashley Padilla) doing a nor'easter. With Veronika Slowikowska. This episode was James Austin Johnson's 100th as a cast member." },
+    { id:"s52_2", title:"Opening Montage", cat:"pre", cast:"Ashley Padilla, Jane Wickline, Saidah Belo-Osagie, Grace Reiter", notes:"", rating:0, fav:false, summary:"The previous season's opening montage returned, with updated shots of Ashley Padilla and Jane Wickline, now promoted to repertory status. Chloe Fineman was removed after leaving at the end of Season 51. First credits for new cast members Saidah Belo-Osagie and Grace Reiter. The host and musical-guest introduction was a single clip for Jalen Brunson and Katseye, and the credit squares changed to purple and orange. This was also the first Behind the Scenes footage set change from the cold open to the monologue for Season 52, presented by T-Mobile." },
+    { id:"s52_3", title:"Monologue by Jalen Brunson", cat:"live", cast:"Kenan Thompson, Jalen Brunson, Karl-Anthony Towns, Mikal Bridges, OG Anunoby, Josh Hart", notes:"", rating:0, fav:false, summary:"Hosting for the first time, New York Knicks player and NBA champion Jalen Brunson talks about the Knicks' 2026 championship before taking questions from the audience. Kenan Thompson appears as Stephen A. Smith, with cameos from Knicks teammates Karl-Anthony Towns, Mikal Bridges, OG Anunoby, and Josh Hart." },
+    { id:"s52_4", title:"Office MVP", cat:"live", cast:"Jalen Brunson, Mikey Day, James Austin Johnson, Sarah Sherman, Ben Marshall", notes:"", rating:0, fav:false, summary:"An office worker (Jalen Brunson) tries to score a basket to impress his co-workers (Mikey Day, James Austin Johnson, Sarah Sherman, Ben Marshall)." },
+    { id:"s52_5", title:"Dream Academy Season Two", cat:"pre", cast:"Ashley Padilla, Saidah Belo-Osagie, Veronika Slowikowska, Jane Wickline, Grace Reiter, Sarah Sherman, Jalen Brunson, Katseye", notes:"", rating:0, fav:false, summary:"A trailer teases the high-stakes second season of Dream Academy. With Ashley Padilla, Saidah Belo-Osagie, Veronika Slowikowska, Jane Wickline, Grace Reiter, and Sarah Sherman. Also features Jalen Brunson and Katseye. First appearances of Saidah Belo-Osagie and Grace Reiter as cast members." },
+    { id:"s52_6", title:"Next Episode Commercial Bumper", cat:"pre", cast:"", notes:"", rating:0, fav:false, summary:"Dakota Johnson will return as SNL host for the third time on Oct. 3. Johnson stars in the upcoming film Verity, in theaters Oct. 2. Turnstile will perform as musical guest for the first time. The Grammy-winning hardcore rock band just kicked off their Never Enough Tour Pt. 2 across North America." },
+    { id:"s52_7", title:"Men's Support Group", cat:"live", cast:"Jalen Brunson, Kenan Thompson, Mikey Day, Marcello Hernández, Ben Marshall, Kam Patterson", notes:"", rating:0, fav:false, summary:"A support group of men (Jalen Brunson, Kenan Thompson, Mikey Day, Marcello Hernández, Ben Marshall, and Kam Patterson) meet to share their trauma." },
+    { id:"s52_8", title:"North High", cat:"pre", cast:"Jalen Brunson, Jeremy Culhane, Tommy Brennan, Kam Patterson, Ben Marshall, Veronika Slowikowska", notes:"", rating:0, fav:false, summary:"A transfer student (Jalen Brunson) joins the North High Cougars basketball team. With Jeremy Culhane, Tommy Brennan, Kam Patterson, Ben Marshall, and Veronika Slowikowska." },
+    { id:"s52_9", title:"Airport Massage Chairs", cat:"live", cast:"Jalen Brunson, Mikey Day, Kenan Thompson, Ashley Padilla, Andrew Dismukes", notes:"", rating:0, fav:false, summary:"Two men (Jalen Brunson, Mikey Day) disrupt an airport while sitting in massage chairs. With Kenan Thompson, Ashley Padilla, and Andrew Dismukes." },
+    { id:"s52_10", title:"Katseye performed \"Animal\"", cat:"musical", cast:"Katseye", notes:"", rating:0, fav:false, summary:"Musical guest Katseye performed \"Animal\" on Saturday Night Live. Lara, Megan, Yoonchae, and Daniela started inside an animal cage before revealing their final outfits right before the chorus." },
+    { id:"s52_11", title:"Weekend Update with Colin Jost and Michael Che", cat:"update", cast:"Colin Jost, Michael Che, Jane Wickline, Jeremy Culhane", notes:"", rating:0, fav:false, summary:"Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like the White House launching Trump TV and critics calling out Hanukkah Barbie appearing to have a larger nose. With guests, Anthropic CEO Dario Amodei (Jane Wickline) stops by Weekend Update to discuss A.I.'s threat to humanity and Tucker Carlson (Jeremy Culhane) stops by Weekend Update to review the films of summer 2026. Colin Jost is the fourth SNL cast member to reach 250 episodes." },
+    { id:"s52_12", title:"Parent-Teacher Conference", cat:"live", cast:"Ashley Padilla, Jalen Brunson, Kenan Thompson, Ben Marshall, James Austin Johnson, Andrew Dismukes", notes:"", rating:0, fav:false, summary:"A mother (Ashley Padilla) invites her support system (Jalen Brunson and Kenan Thompson) to join her parent-teacher conference. With Ben Marshall, James Austin Johnson, and Andrew Dismukes." },
+    { id:"s52_13", title:"Katseye performed \"Hootie Frutti\"", cat:"musical", cast:"Katseye", notes:"", rating:0, fav:false, summary:"Musical guest Katseye performed \"Hootie Frutti\" on Saturday Night Live, closing the night against a juice bar backdrop." },
+    { id:"s52_14", title:"Shark Tank: Respectables", cat:"live", cast:"Ben Marshall, Jeremy Culhane, Jalen Brunson, Sarah Sherman, James Austin Johnson", notes:"", rating:0, fav:false, summary:"Two men (Ben Marshall, Jeremy Culhane) pitch their feminist invention to the Sharks (Jalen Brunson, Sarah Sherman, James Austin Johnson) on Shark Tank. Ben Marshall reached his 100th sketch on SNL." },
+    { id:"s52_15", title:"Old Friend", cat:"live", cast:"Jalen Brunson, Kenan Thompson, James Austin Johnson, Grace Reiter, Kam Patterson", notes:"", rating:0, fav:false, summary:"Jalen Brunson gets a visit from his old basketball coach (Kenan Thompson). With James Austin Johnson, Grace Reiter, and Kam Patterson." },
+    { id:"s52_16", title:"Goodbyes and Closing Credits", cat:"live", cast:"Jalen Brunson, Katseye, Ramy Youssef, Karl-Anthony Towns, Mikal Bridges, OG Anunoby, Josh Hart", notes:"", rating:0, fav:false, summary:"Jalen Brunson thanked Katseye, Ramy Youssef, Karl-Anthony Towns, Mikal Bridges, OG Anunoby, Josh Hart, and everybody at SNL for a great week. He said it was fun and amazing, that he was getting back to his real job pretty soon, and told everyone to have a great night." },
+  ]},
+  { id:"s52e2", ep:"S52E02", date:"Oct 3, 2026", host:"Dakota Johnson", musical:"Turnstile", sketches:[] },
+];
+
+const STORAGE_KEY = 'snl_seasons_v1';
+const LEGACY_KEYS = ['snl51_v3', 'snl51_v2'];
+
+let seasonEpisodes = {};
+let activeSeasonId = '52';
+let activeEpBySeason = {};
+let episodes = [];
+let activeEpId = 's52e1';
 let currentView = 'episode';
 let showAddForm = false;
 let dashSort = 'rating';
@@ -2359,8 +2434,20 @@ let dashDisplay = 'standard';
 let dashSearch = '';
 let dashShowSummary = {};
 
-function cloneBaselineEpisodes() {
-  return JSON.parse(JSON.stringify(BASE_EPISODES));
+function currentSeason() {
+  return SEASONS.find(s => s.id === activeSeasonId) || SEASONS[SEASONS.length - 1];
+}
+
+function baselineFor(seasonId) {
+  const source = seasonId === '51' ? BASE_EPISODES : seasonId === '52' ? BASE_S52 : [];
+  return JSON.parse(JSON.stringify(source));
+}
+
+function bindActiveSeason() {
+  episodes = seasonEpisodes[activeSeasonId] || [];
+  const saved = activeEpBySeason[activeSeasonId];
+  if (saved && episodes.some(e => e.id === saved)) activeEpId = saved;
+  else activeEpId = episodes[0] ? episodes[0].id : null;
 }
 
 function mergeSketchFromSaved(baseSketch, savedSketch) {
@@ -2408,29 +2495,96 @@ function mergeEpisodesArray(stored, baseline) {
 }
 
 function loadData() {
-  const baseline = cloneBaselineEpisodes();
   let raw = null;
-  for (const key of STORAGE_KEYS) {
+  try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+  if (raw) {
     try {
-      raw = localStorage.getItem(key);
-      if (raw) break;
+      const parsed = JSON.parse(raw);
+      SEASONS.forEach(season => {
+        const stored = parsed.seasons && parsed.seasons[season.id];
+        seasonEpisodes[season.id] = mergeEpisodesArray(stored, baselineFor(season.id));
+      });
+      if (parsed.activeSeasonId && SEASONS.some(s => s.id === parsed.activeSeasonId)) {
+        activeSeasonId = parsed.activeSeasonId;
+      }
+      if (parsed.activeEpBySeason && typeof parsed.activeEpBySeason === 'object') {
+        activeEpBySeason = parsed.activeEpBySeason;
+      }
+      bindActiveSeason();
+      return;
     } catch (e) {}
   }
-  if (!raw) {
-    episodes = baseline;
-    return;
+
+  let legacy = null;
+  for (const key of LEGACY_KEYS) {
+    try {
+      legacy = localStorage.getItem(key);
+      if (legacy) break;
+    } catch (e) {}
   }
-  try {
-    const parsed = JSON.parse(raw);
-    const arr = Array.isArray(parsed) ? parsed : (parsed && parsed.episodes);
-    episodes = mergeEpisodesArray(arr, baseline);
-  } catch (e) {
-    episodes = baseline;
+  let legacyArr = null;
+  if (legacy) {
+    try {
+      const parsed = JSON.parse(legacy);
+      legacyArr = Array.isArray(parsed) ? parsed : (parsed && parsed.episodes);
+    } catch (e) {}
   }
+  SEASONS.forEach(season => {
+    const stored = season.id === '51' ? legacyArr : null;
+    seasonEpisodes[season.id] = mergeEpisodesArray(stored, baselineFor(season.id));
+  });
+  activeSeasonId = '52';
+  bindActiveSeason();
 }
 
 function saveData() {
-  try { localStorage.setItem('snl51_v3', JSON.stringify(episodes)); } catch (e) {}
+  activeEpBySeason[activeSeasonId] = activeEpId;
+  const payload = {
+    activeSeasonId,
+    activeEpBySeason,
+    seasons: seasonEpisodes
+  };
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch (e) {}
+  try { localStorage.setItem('snl51_v3', JSON.stringify(seasonEpisodes['51'] || [])); } catch (e) {}
+}
+
+function renderSeasonChrome() {
+  const season = currentSeason();
+  const num = String(season.number);
+  const seasonNum = document.getElementById('season-num');
+  const mobileNum = document.getElementById('mobile-season-num');
+  const dek = document.getElementById('season-dek');
+  const years = document.getElementById('season-years');
+  if (seasonNum) seasonNum.textContent = num;
+  if (mobileNum) mobileNum.textContent = num;
+  if (dek) dek.textContent = season.dek;
+  if (years) years.textContent = season.years;
+  document.title = `SNL · Season ${num} — A Running Catalogue`;
+  const tabs = SEASONS.map(s => {
+    const active = s.id === activeSeasonId ? ' active' : '';
+    const pressed = s.id === activeSeasonId ? 'true' : 'false';
+    return `<button type="button" class="season-tab${active}" role="tab" aria-selected="${pressed}" onclick="selectSeason('${s.id}')">${s.number}</button>`;
+  }).join('');
+  const desktop = document.getElementById('season-switch');
+  const mobile = document.getElementById('mobile-season-switch');
+  if (desktop) desktop.innerHTML = tabs;
+  if (mobile) mobile.innerHTML = tabs;
+}
+
+function selectSeason(id) {
+  if (!SEASONS.some(s => s.id === id) || id === activeSeasonId) return;
+  activeEpBySeason[activeSeasonId] = activeEpId;
+  activeSeasonId = id;
+  showAddForm = false;
+  bindActiveSeason();
+  saveData();
+  renderSeasonChrome();
+  renderSidebar();
+  currentView === 'ranked' ? renderRanked() : renderEpisode();
+  if (window.matchMedia('(max-width: 720px)').matches) {
+    toggleSidebar(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
 
 function getEp() { return episodes.find(e => e.id === activeEpId); }
@@ -2573,7 +2727,9 @@ function setView(v) {
 
 function selectEp(id) {
   activeEpId = id;
+  activeEpBySeason[activeSeasonId] = id;
   showAddForm = false;
+  saveData();
   if (currentView !== 'ranked') {
     document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.textContent.includes('Episode')));
     currentView = 'episode';
@@ -2605,10 +2761,12 @@ document.addEventListener('keydown', e => {
 // ======================================================================
 function exportData() {
   const payload = {
-    app: 'snl-season-51-tracker',
-    version: 4,
+    app: 'snl-tracker',
+    version: 5,
     exportedAt: new Date().toISOString(),
-    episodes: episodes
+    activeSeasonId,
+    activeEpBySeason,
+    seasons: seasonEpisodes
   };
   const json = JSON.stringify(payload, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
@@ -2616,7 +2774,7 @@ function exportData() {
   const stamp = new Date().toISOString().slice(0, 10);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `snl-s51-ratings-${stamp}.json`;
+  a.download = `snl-ratings-${stamp}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -2634,22 +2792,42 @@ function importData() {
     try {
       const text = await file.text();
       const parsed = JSON.parse(text);
-      // Accept both {episodes: [...]} (new) and a bare episodes array (lenient)
-      const eps = Array.isArray(parsed) ? parsed : parsed.episodes;
-      if (!Array.isArray(eps) || !eps.length) {
+      const isMulti = parsed && parsed.seasons && typeof parsed.seasons === 'object' && !Array.isArray(parsed.seasons);
+      const legacyEps = Array.isArray(parsed) ? parsed : (parsed && parsed.episodes);
+      if (!isMulti && (!Array.isArray(legacyEps) || !legacyEps.length)) {
         alert('That file does not look like an SNL tracker export.');
         return;
       }
-      const totalSketches = eps.reduce((n, ep) => n + (ep.sketches ? ep.sketches.length : 0), 0);
+      const seasonCount = isMulti
+        ? SEASONS.filter(s => Array.isArray(parsed.seasons[s.id]) && parsed.seasons[s.id].length).length
+        : 1;
+      const episodeCount = isMulti
+        ? SEASONS.reduce((n, s) => n + (Array.isArray(parsed.seasons[s.id]) ? parsed.seasons[s.id].length : 0), 0)
+        : legacyEps.length;
       const ok = confirm(
-        `Import ${eps.length} episodes (${totalSketches} sketches)?\n\n` +
-        `Saved ratings, favourites, notes, Weekend Update piece ratings, and “memorable musical guest” answers will be merged onto the current episode list (by sketch id). ` +
-        `New sketches from a fresh app build are kept. Consider exporting first if you want a full backup.`
+        `Import ${episodeCount} episodes across ${seasonCount} season${seasonCount === 1 ? '' : 's'}?\n\n` +
+        `Saved ratings, favourites, notes, Weekend Update piece ratings, and memorable musical guest answers will be merged onto each season (by sketch id). ` +
+        `New sketches from a fresh app build are kept. A Season 51-only export merges into Season 51 and leaves other seasons alone.`
       );
       if (!ok) return;
-      episodes = mergeEpisodesArray(eps, cloneBaselineEpisodes());
-      if (!episodes.find(e => e.id === activeEpId)) activeEpId = episodes[0] && episodes[0].id;
+      if (isMulti) {
+        SEASONS.forEach(season => {
+          if (Array.isArray(parsed.seasons[season.id])) {
+            seasonEpisodes[season.id] = mergeEpisodesArray(parsed.seasons[season.id], baselineFor(season.id));
+          }
+        });
+        if (parsed.activeSeasonId && SEASONS.some(s => s.id === parsed.activeSeasonId)) {
+          activeSeasonId = parsed.activeSeasonId;
+        }
+        if (parsed.activeEpBySeason && typeof parsed.activeEpBySeason === 'object') {
+          activeEpBySeason = { ...activeEpBySeason, ...parsed.activeEpBySeason };
+        }
+      } else {
+        seasonEpisodes['51'] = mergeEpisodesArray(legacyEps, baselineFor('51'));
+      }
+      bindActiveSeason();
       saveData();
+      renderSeasonChrome();
       renderSidebar();
       currentView === 'ranked' ? renderRanked() : renderEpisode();
     } catch (err) {
@@ -2721,7 +2899,7 @@ function renderEpisode() {
   const hero = document.getElementById('hero-area');
   const ep = getEp();
   if (!ep) {
-    hero.innerHTML = `<div class="hero-kicker">Season 51</div><div class="hero-title">Select an issue</div><div class="hero-dek">Choose an episode from the contents at left to begin reviewing.</div>`;
+    hero.innerHTML = `<div class="hero-kicker">Season ${currentSeason().number}</div><div class="hero-title">Select an issue</div><div class="hero-dek">Choose an episode from the contents at left to begin reviewing.</div>`;
     content.innerHTML = '';
     return;
   }
@@ -2752,7 +2930,7 @@ function renderEpisode() {
 
   // Hero block: kicker · big host display · italic dek · running score block
   hero.innerHTML = `
-    <div class="hero-kicker">Issue No. ${num} <span style="color:var(--ink-3)">—</span> ${escHtml(ep.date)}</div>
+    <div class="hero-kicker">Season ${currentSeason().number} <span style="color:var(--ink-3)">·</span> Issue No. ${num} <span style="color:var(--ink-3)">—</span> ${escHtml(ep.date)}</div>
     <h1 class="hero-title">${escHtml(ep.host)}</h1>
     <div class="hero-dek">Hosted Saturday Night Live with musical guest <em>${escHtml(ep.musical)}</em>.</div>
   `;
@@ -2881,9 +3059,9 @@ function renderRanked() {
   const rated = getDashItems().filter(s => s.rating > 0);
 
   hero.innerHTML = `
-    <div class="hero-kicker">Season 51 <span style="color:var(--ink-3)">—</span> The Catalogue</div>
+    <div class="hero-kicker">Season ${currentSeason().number} <span style="color:var(--ink-3)">—</span> The Catalogue</div>
     <h1 class="hero-title">The Best Of</h1>
-    <div class="hero-dek">Every rated and favorited sketch of the season, ranked.</div>
+    <div class="hero-dek">Every rated and favorited sketch of Season ${currentSeason().number}, ranked.</div>
     <div class="hero-score">
       <div class="hero-score-label">Rated Entries</div>
       <div class="hero-score-num ${rated.length > 0 ? '' : 'empty'}">${rated.length > 0 ? rated.length : '—'}</div>
@@ -3232,7 +3410,7 @@ function addSketch(epId) {
   showAddForm = false; saveData(); renderSidebar(); renderEpisode();
 }
 
-loadData(); renderSidebar(); renderEpisode();
+loadData(); renderSeasonChrome(); renderSidebar(); renderEpisode();
 </script>
 </body>
 </html>
