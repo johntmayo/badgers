@@ -1,10 +1,20 @@
 # SNL Sketch Ranker — Agent Context
 
-Personal Season 52 sketch tracker. Single-file app: `index.html` (HTML + CSS + JS, localStorage). No build step.
+Multi-season sketch tracker (S51 + S52). Single-file app: `index.html` (HTML + CSS + JS, localStorage). No build step.
 
 ## Purpose
 
-Rate every *real* sketch / monologue / musical / Weekend Update from the season so a year-end Best Of list is easy to compile.
+Rate every *real* sketch / monologue / musical / Weekend Update so a year-end Best Of list is easy to compile. Switch seasons with the S51 / S52 tabs in the sidebar.
+
+## Data baselines
+
+| Const | Season |
+|---|---|
+| `BASE_S51` | Season 51 episodes (`ep1` …) |
+| `BASE_S52` | Season 52 episodes (`s52e1` …) |
+| `SEASONS` | Sidebar season tabs |
+
+Persistence key: `snl_ranker_v3` (migrates from `snl_seasons_v1`, `snl52_v2`, `snl51_v3`, etc.).
 
 ## What counts as ratable
 
@@ -30,11 +40,12 @@ Rate every *real* sketch / monologue / musical / Weekend Update from the season 
 2. Copy the wikitable under `==Sketches and Musical Performances==` (and episode host/guest/date from the infobox).
 3. Paste into chat and ask to add / fill the episode in `index.html`.
 4. Agent should:
-   - Append or fill a `BASE_EPISODES` entry: `{ id, ep, date, host, musical, sketches }`
+   - Append or fill the right baseline (`BASE_S51` or `BASE_S52`): `{ id, ep, date, host, musical, sketches }`
+   - Season 52 ids: `s52eN` / sketches `s52eN_K`. Season 51 ids: `epN` / existing sketch ids
    - Map wiki rows → sketch objects (see below)
    - **Filter out** non-ratable titles listed above
-   - Bump nothing in localStorage schema unless the object shape changes (then bump `snl52_v2` → `v3` and migrate)
-   - Keep sketch `id`s stable once shipped (`s7_1`, `s7_2`, …) — never renumber existing IDs
+   - Bump nothing in localStorage schema unless the object shape changes (then bump `snl_ranker_v3` → `v4` and migrate)
+   - Keep sketch `id`s stable once shipped — never renumber existing IDs
 
 ### Wiki color → `cat`
 
@@ -87,16 +98,16 @@ Weekend Update rows are visually distinct (`cat: 'update'`). Non-ratable segment
 
 ## Persistence
 
-- Key: `snl52_v2`
-- Saves ratings, favorites, notes, cast edits, and user-added sketches
-- `BASE_EPISODES` is the factory default; localStorage wins on load
+- Key: `snl_ranker_v3`
+- Saves ratings, favorites, notes, cast edits, active season/episode, and user-added sketches for all seasons
+- `BASE_S51` / `BASE_S52` are factory defaults; localStorage merges onto them on load
 - On schema breaks, bump the key and migrate or accept reset
 
 ## Files
 
 | File | Role |
 |---|---|
-| `index.html` | Entire app + `BASE_EPISODES` |
+| `index.html` | Entire app + season baselines |
 | `AGENTS.md` | This file — ingestion + product rules for future agents |
 | `snl_tracker_overview.md` | Older Season 51 design notes (partially superseded) |
 
