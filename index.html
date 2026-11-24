@@ -657,6 +657,54 @@ body {
 }
 .mod-hint b { color: var(--ink); }
 
+/* "Last rated" nudge chip */
+.rated-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 8px 7px 12px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.55);
+}
+.rated-chip.empty {
+  justify-content: center;
+  color: var(--mute);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  border-style: dotted;
+}
+.rated-info { display: flex; flex-direction: column; min-width: 0; }
+.rated-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.rated-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rated-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.rated-controls .mod-btn { width: 44px; padding: 7px 0; font-size: 20px; }
+.rated-controls .mod-btn:disabled { opacity: 0.3; cursor: default; }
+.rated-grade {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  min-width: 34px;
+  text-align: center;
+}
+.rated-clear { padding: 6px 9px; }
+
 /* ============================================================
    MOBILE: sidebar becomes a slide-in drawer (no permanent rail)
    ============================================================ */
@@ -4475,8 +4523,7 @@ let listSort = 'air';
 let selectedId = null;
 let cardIndex = 0;
 let showAddForm = false;
-let armedMod = '';
-let armedCardKey = null;
+let lastRatedId = null;
 let touchStartX = 0;
 let touchDeltaX = 0;
 
@@ -4656,7 +4703,7 @@ function selectEp(id) {
   activeEpBySeason[activeSeasonId] = id;
   selectedId = null;
   cardIndex = 0;
-  armedCardKey = null;
+  lastRatedId = null;
   showAddForm = false;
   closeNav();
   if (currentView === 'ranked') currentView = 'list';
@@ -4786,9 +4833,28 @@ function renderCards() {
   cardIndex = Math.max(0, Math.min(list.length - 1, cardIndex));
   const s = list[cardIndex];
   selectedId = s.id;
-  if (armedCardKey !== s.id) { armedMod = parseGrade(s.rating).mod; armedCardKey = s.id; }
   const curBase = parseGrade(s.rating).base;
   const pct = ((cardIndex + 1) / list.length) * 100;
+
+  // "Last rated" chip: the most recently graded card (or the current card if it
+  // already has a grade) — lets you nudge +/- without losing your place.
+  const lastRated = lastRatedId ? list.find(x => x.id === lastRatedId && x.rating) : null;
+  const lastMod = lastRated ? parseGrade(lastRated.rating).mod : '';
+  const lastIsF = lastRated ? parseGrade(lastRated.rating).base === 'F' : false;
+  const ratedChip = lastRated
+    ? `<div class="rated-chip">
+         <div class="rated-info">
+           <span class="rated-label">just rated</span>
+           <span class="rated-name" title="${esc(lastRated.title)}">${esc(lastRated.title)}</span>
+         </div>
+         <div class="rated-controls">
+           <button type="button" class="mod-btn ${lastMod === '-' ? 'on' : ''}" ${lastIsF ? 'disabled' : ''} onclick="nudgeLast('-')" title="Minus">&minus;</button>
+           <span class="rated-grade ${gradeClass(lastRated.rating)}">${esc(lastRated.rating)}</span>
+           <button type="button" class="mod-btn ${lastMod === '+' ? 'on' : ''}" ${lastIsF ? 'disabled' : ''} onclick="nudgeLast('+')" title="Plus">+</button>
+           <button type="button" class="btn-ghost rated-clear" onclick="clearLast()">Clear</button>
+         </div>
+       </div>`
+    : `<div class="rated-chip empty">Tap a letter to grade &amp; advance &middot; then nudge it with &minus;/+ here</div>`;
 
   content.innerHTML = `<div class="card-stage" id="card-stage">
     <div class="card-progress">
@@ -4806,12 +4872,7 @@ function renderCards() {
           <div class="grade-letters">
             ${['A','B','C','D','F'].map(L => `<button type="button" class="grade-btn g-${L.toLowerCase()} ${curBase === L ? 'on' : ''}" onclick="setGradeBase('${ep.id}','${s.id}','${L}')">${L}</button>`).join('')}
           </div>
-          <div class="grade-mods">
-            <button type="button" class="mod-btn ${armedMod === '-' ? 'on' : ''}" onclick="armMod('-')" title="Minus">&minus;</button>
-            <button type="button" class="mod-btn ${armedMod === '+' ? 'on' : ''}" onclick="armMod('+')" title="Plus">+</button>
-            <span class="mod-hint">${s.rating ? `Grade <b>${esc(s.rating)}</b>` : (armedMod ? `armed <b>${armedMod === '-' ? '\u2212' : '+'}</b> &middot; tap a letter` : 'tap a letter &middot; +/&minus; to refine')}</span>
-            <button type="button" class="btn-ghost" onclick="setGradeFromCard('${ep.id}','${s.id}','')">Clear</button>
-          </div>
+          ${ratedChip}
         </div>
         <div class="card-actions">
           <button type="button" class="fav-toggle ${s.fav ? 'on' : ''}" onclick="toggleFav('${ep.id}','${s.id}')" style="font-size:18px">♥ Favorite</button>
@@ -4826,7 +4887,7 @@ function renderCards() {
       <button type="button" class="nav-btn" onclick="cardStep(-1)" ${cardIndex === 0 ? 'disabled' : ''}>← Prev</button>
       <button type="button" class="nav-btn" onclick="cardStep(1)" ${cardIndex >= list.length - 1 ? 'disabled' : ''}>Next →</button>
     </div>
-    <div class="hint">Swipe or ← → · tap a grade to set · advances automatically</div>
+    <div class="hint">Tap a grade — it sets and jumps to the next card · nudge the last one with −/+ · swipe or ← →</div>
   </div>`;
 
   const stage = document.getElementById('card-stage');
@@ -4889,24 +4950,41 @@ function parseGrade(g) {
   if (!g) return { base: '', mod: '' };
   return { base: g.charAt(0), mod: g.length > 1 ? g.charAt(1) : '' };
 }
-function armMod(sign) {
-  armedMod = (armedMod === sign) ? '' : sign;
-  armedCardKey = selectedId;
-  renderCards();
-}
+// Tap a letter: set a plain grade, remember it as the "last rated" card, and
+// advance immediately. The +/- modifier is applied afterward via the chip, so
+// grading stays one-tap-fast without losing the ability to shave to +/-.
 function setGradeBase(epId, sId, L) {
   const s = getSketch(episodes.find(e => e.id === epId), sId);
   if (!s) return;
-  const mod = (L === 'F') ? '' : armedMod;
-  const g = L + mod;
-  const same = s.rating === g;
-  s.rating = same ? '' : g;
+  const same = s.rating === L;
+  s.rating = same ? '' : L;
+  lastRatedId = same ? null : sId;
   saveData();
-  armedCardKey = null;
   if (!same) {
     const list = ratableSketches(getEp());
     if (cardIndex < list.length - 1) cardIndex += 1;
   }
+  render();
+}
+// Nudge the last-rated card's modifier (toggles +/-; no-op on F).
+function nudgeLast(sign) {
+  const ep = getEp();
+  if (!ep || !lastRatedId) return;
+  const s = getSketch(ep, lastRatedId);
+  if (!s || !s.rating) return;
+  const { base, mod } = parseGrade(s.rating);
+  if (base === 'F') return;
+  s.rating = base + (mod === sign ? '' : sign);
+  saveData();
+  render();
+}
+function clearLast() {
+  const ep = getEp();
+  if (!ep || !lastRatedId) return;
+  const s = getSketch(ep, lastRatedId);
+  if (s) s.rating = '';
+  lastRatedId = null;
+  saveData();
   render();
 }
 function toggleNav() { document.body.classList.toggle('nav-open'); }
@@ -4972,6 +5050,10 @@ function addSketch(epId) {
 function cardStep(delta) {
   const list = ratableSketches(getEp());
   cardIndex = Math.max(0, Math.min(list.length - 1, cardIndex + delta));
+  // When you land on an already-graded card while reviewing, point the nudge
+  // chip at it so -/+ affect what you're looking at.
+  const cur = list[cardIndex];
+  if (cur && cur.rating) lastRatedId = cur.id;
   renderCards();
 }
 function onTouchStart(e) { touchStartX = e.changedTouches[0].screenX; touchDeltaX = 0; }
@@ -4995,8 +5077,15 @@ function onTouchEnd() {
 document.addEventListener('keydown', e => {
   if (currentView !== 'cards') return;
   if (e.target.matches('input, textarea, select')) return;
-  if (e.key === 'ArrowRight' || e.key === 'j') { e.preventDefault(); cardStep(1); }
-  if (e.key === 'ArrowLeft' || e.key === 'k') { e.preventDefault(); cardStep(-1); }
+  if (e.key === 'ArrowRight' || e.key === 'j') { e.preventDefault(); cardStep(1); return; }
+  if (e.key === 'ArrowLeft' || e.key === 'k') { e.preventDefault(); cardStep(-1); return; }
+  const ep = getEp();
+  const list = ratableSketches(ep || { sketches: [] });
+  const cur = list[cardIndex];
+  const key = e.key.toLowerCase();
+  if (cur && ['a', 'b', 'c', 'd', 'f'].includes(key)) { e.preventDefault(); setGradeBase(ep.id, cur.id, key.toUpperCase()); return; }
+  if (e.key === '-' || e.key === '_') { e.preventDefault(); nudgeLast('-'); return; }
+  if (e.key === '+' || e.key === '=') { e.preventDefault(); nudgeLast('+'); return; }
 });
 
 loadData();
