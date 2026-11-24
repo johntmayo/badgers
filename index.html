@@ -9,25 +9,35 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Saira+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #101211;
-  --panel: #171a18;
-  --panel-2: #1d211f;
-  --line: #2a302c;
-  --line-strong: #3a433e;
-  --ink: #e8ece9;
-  --mute: #7a8680;
-  --faint: #4a544e;
-  --accent: #c6ff40;
-  --update: #3eb6ff;
-  --update-bg: rgba(62,182,255,0.08);
-  --fav: #ff6b9d;
-  --a: #b8ff3c;
-  --b: #7dd3fc;
-  --c: #fbbf24;
-  --d: #fb923c;
-  --f: #f87171;
-  --sidebar-w: 220px;
+  /* Warm corkboard / 3x5 index-card aesthetic */
+  --bg: #cbb183;             /* cork board canvas */
+  --cork: #cbb183;
+  --cork-dark: #b2945f;
+  --panel: #fcf7ea;          /* index-card paper */
+  --panel-2: #f3ead4;        /* deeper paper */
+  --line: #e2d4b4;
+  --line-strong: #cbb78c;
+  --ink: #332a1e;            /* warm near-black ink */
+  --mute: #8a7858;
+  --faint: #b3a07c;
+  --accent: #c0392b;         /* pushpin red */
+  --update: #b5362a;         /* Update red */
+  --update-bg: #ffffff;
+  --fav: #d6336c;
+  /* letter-grade colors, tuned for cream paper */
+  --a: #3f9142;
+  --b: #2f7fc4;
+  --c: #c9971c;
+  --d: #d1702a;
+  --f: #c0392b;
+  --sidebar-w: 224px;
   --row-h: 34px;
+  /* per-category note-card tints + pin colors */
+  --cold-paper: #e9f2df;  --cold-pin: #6fae4f;
+  --live-paper: #e2ecf7;  --live-pin: #4f84c4;
+  --pre-paper:  #f9f0cd;  --pre-pin:  #caa233;
+  --mus-paper:  #f7ddd7;  --mus-pin:  #c65349;
+  --upd-paper:  #ffffff;  --upd-pin:  #b5362a;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
@@ -459,10 +469,249 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .season-tab:hover { color: var(--ink); border-color: var(--mute); }
 .season-tab.active { background: var(--ink); color: #0c0e0d; border-color: var(--ink); }
+
+/* ============================================================
+   CORKBOARD THEME OVERRIDES
+   ============================================================ */
+
+/* Cork texture on the board canvas */
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 18% 28%, rgba(90,60,25,0.10) 0 1.2px, transparent 1.6px),
+    radial-gradient(circle at 68% 62%, rgba(90,60,25,0.08) 0 1.2px, transparent 1.6px),
+    radial-gradient(circle at 42% 82%, rgba(255,255,255,0.10) 0 1.1px, transparent 1.5px),
+    radial-gradient(circle at 85% 18%, rgba(90,60,25,0.07) 0 1px, transparent 1.4px);
+  background-size: 15px 15px, 23px 23px, 19px 19px, 27px 27px;
+}
+
+/* --- Sidebar: a pinned manila column --- */
+.sidebar { background: var(--cork-dark); border-right: 1px solid rgba(60,40,15,0.35); }
+.brand { border-bottom: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); }
+.brand-kicker { color: rgba(255,255,255,0.65); }
+.brand-title { color: #fff6e8; }
+.brand-title span { color: #ffe08a; }
+.brand-sub { color: rgba(255,255,255,0.7); }
+.ep-item { border-bottom: 1px solid rgba(60,40,15,0.22); color: #fdf7ea; }
+.ep-item:hover { background: rgba(255,255,255,0.08); }
+.ep-item.active { background: var(--panel); box-shadow: inset 4px 0 0 var(--accent); }
+.ep-item.active .ep-host { color: var(--ink); }
+.ep-item .ep-host { color: #fdf7ea; }
+.ep-code { color: rgba(255,255,255,0.65); }
+.ep-item.active .ep-code { color: var(--accent); }
+.ep-meta { color: rgba(255,255,255,0.72); }
+.ep-item.active .ep-meta { color: var(--mute); }
+.ep-meta .done, .ep-item.active .ep-meta .done { color: #2f7d2f; }
+.ep-item.active .ep-meta .done { color: var(--a); }
+.season-tab { border-color: rgba(255,255,255,0.4); color: rgba(255,255,255,0.8); }
+.season-tab:hover { color: #fff; border-color: #fff; }
+.season-tab.active { background: #fff6e8; color: var(--cork-dark); border-color: #fff6e8; }
+
+/* --- Top bar + tabs --- */
+.topbar { background: var(--panel); border-bottom: 1px solid var(--line-strong); align-items: center; }
+.tab.active, .sort-btn.active { background: var(--ink); color: #fff6e8; border-color: var(--ink); }
+.list-head { background: var(--cork-dark); color: rgba(255,255,255,0.8); border-radius: 4px; }
+
+/* --- Scrollbars --- */
+::-webkit-scrollbar-thumb { background: var(--cork-dark); }
+
+/* --- Inputs / selects --- */
+.grade-select, .cat-select-sm { background: #fff; color: var(--ink); border-color: var(--line-strong); }
+.field input, .field textarea { background: #fff; }
+.detail-bar { background: var(--panel-2); border-top: 1px solid var(--line-strong); }
+.add-strip { background: var(--panel); border-top: 1px solid var(--line); }
+.btn-ghost.primary:hover { background: var(--ink); color: #fff6e8; }
+
+/* ============================================================
+   NOTE-CARD ROWS (List + Best Of) — cards pinned to the board
+   ============================================================ */
+.list-wrap { padding: 8px 10px 16px; }
+.list-row {
+  position: relative;
+  border-bottom: none;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  background: var(--panel);
+  box-shadow: inset 4px 0 0 var(--spine, var(--line-strong)), 0 1px 2px rgba(60,40,15,0.14);
+}
+.list-row:nth-child(even) { background: var(--panel); }
+.list-row:hover { filter: none; box-shadow: inset 4px 0 0 var(--spine, var(--line-strong)), 0 2px 7px rgba(60,40,15,0.22); }
+.list-row.sel { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.list-row.cat-cold,    .list-row.cat-cold:nth-child(even)    { background: var(--cold-paper); --spine: var(--cold-pin); }
+.list-row.cat-live,    .list-row.cat-live:nth-child(even)    { background: var(--live-paper); --spine: var(--live-pin); }
+.list-row.cat-pre,     .list-row.cat-pre:nth-child(even)     { background: var(--pre-paper);  --spine: var(--pre-pin); }
+.list-row.cat-musical, .list-row.cat-musical:nth-child(even) { background: var(--mus-paper);  --spine: var(--mus-pin); }
+.list-row.cat-update,  .list-row.cat-update:nth-child(even)  { background: var(--upd-paper);  --spine: var(--upd-pin); }
+
+.col-cat { color: var(--mute); }
+.list-row.cat-update .col-cat { color: var(--update); font-weight: 700; letter-spacing: 0.1em; }
+.list-row.cat-musical .col-cat { color: var(--mus-pin); font-weight: 700; }
+.list-row.cat-update .col-title { letter-spacing: 0.01em; }
+
+/* Best Of rows */
+.rank-row { border-bottom: none; margin: 0 10px 5px; border-radius: 5px; box-shadow: inset 4px 0 0 var(--spine, var(--line-strong)), 0 1px 2px rgba(60,40,15,0.14); }
+.rank-row:nth-child(even) { background: var(--panel); }
+.ranked-wrap { padding: 10px 0 16px; }
+.rank-row.cat-cold    { background: var(--cold-paper); --spine: var(--cold-pin); }
+.rank-row.cat-live    { background: var(--live-paper); --spine: var(--live-pin); }
+.rank-row.cat-pre     { background: var(--pre-paper);  --spine: var(--pre-pin); }
+.rank-row.cat-musical { background: var(--mus-paper);  --spine: var(--mus-pin); }
+.rank-row.cat-update  { background: var(--upd-paper);  --spine: var(--upd-pin); }
+.rank-n.top { color: var(--accent); }
+
+/* ============================================================
+   CARDS MODE — the hero 3x5 with a real pushpin
+   ============================================================ */
+.card-progress .bar > i { background: var(--accent); }
+.sketch-card {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  box-shadow: 0 10px 24px rgba(60,40,15,0.22);
+  padding-top: 28px;
+}
+.sketch-card::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 33% 28%, rgba(255,255,255,0.9), rgba(255,255,255,0) 46%),
+    radial-gradient(circle at 52% 58%, var(--pin, var(--accent)), #5e1812);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.45);
+  z-index: 2;
+}
+.sketch-card::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 2px; height: 10px;
+  transform: translateX(-50%) rotate(8deg);
+  transform-origin: top center;
+  background: linear-gradient(var(--pin, var(--accent)), rgba(0,0,0,0.15));
+  opacity: 0.5;
+  z-index: 1;
+}
+.sketch-card.cat-cold    { background: var(--cold-paper); --pin: var(--cold-pin); }
+.sketch-card.cat-live    { background: var(--live-paper); --pin: var(--live-pin); }
+.sketch-card.cat-pre     { background: var(--pre-paper);  --pin: var(--pre-pin); }
+.sketch-card.cat-musical { background: var(--mus-paper);  --pin: var(--mus-pin); }
+.sketch-card.cat-update  { background: var(--upd-paper);  --pin: var(--upd-pin); }
+.sketch-card.is-update { border-color: var(--line-strong); box-shadow: 0 10px 24px rgba(60,40,15,0.22); background: var(--upd-paper); }
+.card-cat { color: var(--mute); }
+.sketch-card.cat-update .card-cat { color: var(--update); font-weight: 700; }
+.sketch-card.cat-musical .card-cat { color: var(--mus-pin); font-weight: 700; }
+.sketch-card.cat-update .card-title { letter-spacing: 0.02em; }
+
+/* ============================================================
+   GRADE PAD — compact letters + armed +/- modifier
+   ============================================================ */
+.grade-pad { display: flex; flex-direction: column; gap: 8px; }
+.grade-letters { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.grade-btn {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  padding: 11px 0;
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 5px;
+}
+.grade-btn:hover { border-color: var(--mute); color: var(--ink); background: var(--panel-2); }
+.grade-btn.on { color: #fff; border-color: transparent; }
+.grade-btn.on.g-a { background: var(--a); }
+.grade-btn.on.g-b { background: var(--b); }
+.grade-btn.on.g-c { background: var(--c); }
+.grade-btn.on.g-d { background: var(--d); }
+.grade-btn.on.g-f { background: var(--f); }
+.grade-mods { display: flex; align-items: center; gap: 6px; }
+.mod-btn {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  width: 54px;
+  padding: 9px 0;
+  border: 1px dashed var(--line-strong);
+  background: #fff;
+  color: var(--mute);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.mod-btn:hover { border-color: var(--mute); color: var(--ink); }
+.mod-btn.on { background: var(--ink); color: #fff6e8; border-style: solid; border-color: var(--ink); }
+.mod-hint {
+  flex: 1;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--mute);
+  letter-spacing: 0.02em;
+}
+.mod-hint b { color: var(--ink); }
+
+/* ============================================================
+   MOBILE: sidebar becomes a slide-in drawer (no permanent rail)
+   ============================================================ */
+.menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 40px; height: 36px;
+  margin-right: 10px;
+  flex-shrink: 0;
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: 6px;
+  font-size: 19px;
+  cursor: pointer;
+}
+.scrim { display: none; }
+
+@media (max-width: 820px) {
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 84vw;
+    max-width: 310px;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.24s ease;
+    box-shadow: 6px 0 28px rgba(30,18,6,0.4);
+  }
+  body.nav-open .sidebar { transform: none; }
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(35,22,8,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+  }
+  body.nav-open .scrim { opacity: 1; pointer-events: auto; }
+  .menu-btn { display: inline-flex; }
+  .top-host { font-size: 20px; }
+  .card-title { font-size: 23px; }
+  .grade-letters { grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .grade-btn { font-size: 18px; padding: 13px 0; }
+  .mod-btn { width: 48px; padding: 11px 0; }
+}
 </style>
 </head>
 <body>
 <div class="app">
+  <div class="scrim" id="scrim" onclick="closeNav()"></div>
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-kicker">Saturday Night Live</div>
@@ -474,6 +723,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   </aside>
   <main class="main">
     <header class="topbar">
+      <button class="menu-btn" id="menu-btn" onclick="toggleNav()" aria-label="Episodes menu">&#9776;</button>
       <div class="top-left">
         <div class="top-host" id="main-title">Select episode</div>
         <div class="top-line" id="main-sub"></div>
@@ -3962,6 +4212,225 @@ const BASE_S52 = [
   }
 ];
 
+/* ============================================================
+   WEEKEND UPDATE DESK PIECES
+   Each Update block is split into the anchors' desk (the main
+   "Weekend Update" slot, which keeps the original sketch id so
+   existing ratings survive) plus one slot per desk-guest piece.
+   Keyed by the original Update sketch id. Edit here to tune.
+   ============================================================ */
+const UPDATE_ANCHORS = 'Colin Jost, Michael Che';
+const UPDATE_DESKS = {
+  // ---- Season 51 ----
+  's1_9': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like the FCC approving an abortion pill before the government shutdown and A.I.-generated actresses getting attention from Hollywood agents.`,
+    pieces: [
+      { title: `Kam Patterson (First Update)`, cast: `Kam Patterson`, summary: `New cast member Kam Patterson stops by in his very first Weekend Update to discuss being a new cast member, joking about being unable to use a specific slur that is a regular part of his stand-up act and the potential half-million-dollar fine for doing so.` },
+      { title: `Dobby the House Elf`, cast: `Bowen Yang`, summary: `Dobby the House Elf stops by Weekend Update to discuss J. K. Rowling and her views on transgender people.` }
+    ]
+  },
+  's2_10': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like the U.S. Treasury planning to release a silver dollar with Trump's face on it and an A.I. video app that lets users make cameos of themselves. Host Amy Poehler pulled off an impressive feat, appearing in both the Cold Open and on Weekend Update.`,
+    pieces: [
+      { title: `Rhonda LaCenzo`, cast: `Sarah Sherman`, summary: `Rhonda LaCenzo stops by Weekend Update to discuss New York City mayoral race frontrunner Zohran Mamdani.` },
+      { title: `The Couple You Can't Believe Are Together`, cast: `Marcello Hernández, Jane Wickline`, summary: `The Couple You Can't Believe Are Together stop by Weekend Update to discuss cuffing season and thinking they could do better.` },
+      { title: `Anchor Joke-Off: Poehler, Fey & Meyers`, cast: `Amy Poehler, Tina Fey, Seth Meyers`, summary: `Former Weekend Update anchors Amy Poehler, Tina Fey and Seth Meyers reunite and take on Colin Jost and Michael Che in a joke-off about a Tennessee woman who gave birth to a 13-pound baby.` }
+    ]
+  },
+  's3_10': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like Trump telling reporters he's not getting into heaven and a Chinese man getting an organ transplant from a pig.`,
+    pieces: [
+      { title: `The Movie Guy`, cast: `Marcello Hernández`, summary: `The Movie Guy stops by Weekend Update to discuss scary movies like The Black Phone 2, Weapons and more.` },
+      { title: `Tommy Brennan (First Update)`, cast: `Tommy Brennan`, summary: `New cast member Tommy Brennan stops by in his very first Weekend Update to discuss growing up in the Midwest and moving to New York City.` }
+    ]
+  },
+  's4_10': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like Trump rating his meeting with Chinese President Xi Jinping a "12 out of 10" and a study finding childhood peanut allergies are on the decline due to early exposure to peanuts.`,
+    pieces: [
+      { title: `George Santos`, cast: `Bowen Yang`, summary: `George Santos stops by Weekend Update to discuss the New York City Marathon and how prison changed him.` },
+      { title: `Two People Who Just Hooked Up`, cast: `Andrew Dismukes, Ashley Padilla`, summary: `Two People Who Just Hooked Up stop by Weekend Update to discuss the government shutdown.` }
+    ]
+  },
+  's5_10': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like someone collapsing in the Oval Office during a press conference, Zohran Mamdani becoming the new mayor of New York City and Dick Cheney passing away.`,
+    pieces: [
+      { title: `Pete Davidson`, cast: `Pete Davidson`, summary: `Longtime former cast member Pete Davidson stops by Weekend Update to discuss him and Colin Jost losing money on their Staten Island ferry.` }
+    ]
+  },
+  's6_11': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like DNA analysis showing Hitler had a genetic disorder that caused low testosterone levels and a micropenis. No guest commentaries this week.`,
+    pieces: []
+  },
+  's7_8': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like Netflix acquiring Warner Bros. Discovery for $82 billion and a study revealing short-form videos lead to mental cognition problems.`,
+    pieces: [
+      { title: `Redhead Who Just Went on Vacation`, cast: `Ben Marshall`, summary: `The Redhead Who Just Went on Vacation stops by in his very first Weekend Update appearance to share some tropical travel tips.` },
+      { title: `A Drunk Raccoon`, cast: `Sarah Sherman`, summary: `A drunk raccoon stops by Weekend Update to discuss breaking into a liquor store.` }
+    ]
+  },
+  's8_9': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like Trump saying the potential Netflix and Warner Bros. merger "could be a problem" and a proposed bill that would force fathers to pay for half of pregnancy-related medical expenses.`,
+    pieces: [
+      { title: `Marcello Hernández on the Holidays`, cast: `Marcello Hernández`, summary: `Marcello Hernández stops by Weekend Update to discuss going home to visit family for the holidays.` },
+      { title: `Jane Wickline's Song`, cast: `Jane Wickline`, summary: `Jane Wickline stops by Weekend Update to perform a song called "The Greatest Threat to Humanity Right Now."` }
+    ]
+  },
+  's9_10': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like Trump claiming there have been "zero illegal aliens" allowed into the country in the last seven months. To close out 2025, the anchors also make each other read jokes they have never seen before, live on air.`,
+    pieces: [
+      { title: `Michael Che's Nephew Tyson`, cast: `Kam Patterson`, summary: `Michael Che's nephew Tyson stops by Weekend Update to address Santa Claus.` },
+      { title: `Trend Forecasters`, cast: `Aidy Bryant, Bowen Yang`, summary: `Trend forecasters stop by Weekend Update to discuss what's in and what's out.` }
+    ]
+  },
+  's10_9': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like a congressman introducing a bill to make Greenland the 51st state and SKIMS partnering with Nike to release their first-ever shoe.`,
+    pieces: [
+      { title: `Michael Irvin`, cast: `Kam Patterson`, summary: `Michael Irvin stops by Weekend Update to discuss the college football national championship game between the University of Miami and Indiana University.` },
+      { title: `Tamara`, cast: `Jane Wickline`, summary: `Tamara stops by Weekend Update to discuss her confusing New Year's resolution involving buttons.` }
+    ]
+  },
+  's11_9': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like Trump inviting Russia and Saudi Arabia to join his Board of Peace and Channing Tatum announcing Magic Mike Live is coming to New York City.`,
+    pieces: [
+      { title: `Marcello Hernández on Gen Z Slang`, cast: `Marcello Hernández`, summary: `Marcello Hernández stops by Weekend Update to translate Gen Z terms like "chopped" and "glo-up."` },
+      { title: `Mr. On Blast`, cast: `Jeremy Culhane`, summary: `Mr. On Blast stops by in his very first Weekend Update appearance to speak his mind on topics like billionaires, big pharma and more.` }
+    ]
+  },
+  's12_10': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like the FBI investigating Trump's false claim the 2020 election was rigged and Ye publishing an apology in The Wall Street Journal.`,
+    pieces: [
+      { title: `Weather Correspondent Sarah Sherman`, cast: `Sarah Sherman, Jack McBrayer`, summary: `Sarah Sherman makes her debut as Weekend Update's weather correspondent, with a quick cameo by Jack McBrayer.` },
+      { title: `Two People Who Just Hooked Up`, cast: `Andrew Dismukes, Ashley Padilla`, summary: `Two People Who Just Hooked Up stop by Weekend Update to discuss Super Bowl LX.` }
+    ]
+  },
+  's13_9': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like Hillary Clinton's Jeffrey Epstein testimony and American Girl doll collectors complaining about alleged changes to the dolls.`,
+    pieces: [
+      { title: `Beth's Maid of Honor Katie`, cast: `Veronika Slowikowska`, summary: `Beth's Maid of Honor Katie stops by in her very first Weekend Update appearance to recap the latest news in her wedding toast.` },
+      { title: `Punch the Monkey's Mom`, cast: `Sarah Sherman, Marcello Hernández`, summary: `Punch the Monkey's Mom stops by Weekend Update to talk about her son and why she abandoned him.` }
+    ]
+  },
+  's14_9': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like New Mexico officials reopening an investigation into Jeffrey Epstein's ranch.`,
+    pieces: [
+      { title: `Pastor Update`, cast: `Kenan Thompson, James Austin Johnson`, summary: `Pastor Update and his bandleader Teddy stop by Weekend Update to share some words of encouragement.` }
+    ]
+  },
+  's15_9': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like RFK Jr. recovering from surgery and YouTube launching a tool that lets reporters flag AI videos that imitate their likeness.`,
+    pieces: [
+      { title: `Tucker Carlson`, cast: `Jeremy Culhane`, summary: `Tucker Carlson stops by Weekend Update to discuss how liberal politics have influenced the 2026 Academy Awards.` },
+      { title: `The Heart Emoji & the Aerial Tramway Emoji`, cast: `Marcello Hernández, Mikey Day`, summary: `The Heart Emoji and the Aerial Tramway Emoji stop by Weekend Update to discuss Apple's newest emojis.` }
+    ]
+  },
+  's16_9': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like Trump's plans for a presidential library and Pizza Hut unveiling a hot-dog-stuffed-crust pizza.`,
+    pieces: [
+      { title: `Kristi Noem's Husband`, cast: `Sarah Sherman`, summary: `Kristi Noem's husband stops by Weekend Update to address his latest controversy.` },
+      { title: `Professor Snape`, cast: `Kam Patterson`, summary: `Professor Snape stops by Weekend Update to discuss his role in the new HBO Harry Potter series.` }
+    ]
+  },
+  's17_9': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like the Artemis II astronauts returning from their moon mission and bars across the U.S. beginning to ban cell phones.`,
+    pieces: [
+      { title: `Two Kids from the Back of the Bus`, cast: `Marcello Hernández, Kam Patterson`, summary: `Two Kids from the Back of the Bus stop by Weekend Update to discuss the rise in inflation.` },
+      { title: `Gen Z Sexpert Lindt Greer`, cast: `Jane Wickline`, summary: `Gen Z sexpert Lindt Greer stops by Weekend Update to discuss a new study showing young people are having less sex than at any other point in history.` }
+    ]
+  },
+  's18_10': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like King Charles meeting New York City mayor Zohran Mamdani and a woman damaging a statue in Italy while trying to touch its genitals.`,
+    pieces: [
+      { title: `Alix Earle & Alex Cooper`, cast: `Veronika Slowikowska, Chloe Fineman`, summary: `Alix Earle and Alex Cooper stop by Weekend Update to discuss their feud.` },
+      { title: `Kam Patterson`, cast: `Kam Patterson`, summary: `Kam Patterson stops by Weekend Update to discuss Megan Thee Stallion breaking up with Klay Thompson.` }
+    ]
+  },
+  's19_10': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like Marco Rubio meeting with Pope Leo XIV and a woman getting arrested for kicking a boy at a football game.`,
+    pieces: [
+      { title: `Tucker Carlson`, cast: `Jeremy Culhane`, summary: `Tucker Carlson stops by Weekend Update to discuss how liberal politics impacted the 2026 Met Gala.` },
+      { title: `Two Kamikaze Dolphins`, cast: `Mikey Day, Marcello Hernández`, summary: `Two Kamikaze Dolphins stop by Weekend Update to discuss their reported role in the Iran War.` },
+      { title: `Jane Wickline's Song`, cast: `Jane Wickline`, summary: `Jane Wickline stops by Weekend Update to perform a song for everyone she has made wait for her.` }
+    ]
+  },
+  's20_8': {
+    anchors: `Weekend Update anchors Colin Jost and Michael Che tackle the week's biggest news, like FIFA announcing a World Cup final halftime show featuring Madonna, Shakira and BTS and Stevie Wonder celebrating his 76th birthday. They close out season 51 by making each other read jokes they have never seen before.`,
+    pieces: [
+      { title: `Mr. On Blast`, cast: `Jeremy Culhane`, summary: `Mr. On Blast stops by Weekend Update to speak his mind on topics like AI, the stock market and more.` }
+    ]
+  },
+  // ---- Season 52 ----
+  's52e1_9': {
+    anchors: `Jost and Che cover Trump TV and Hanukkah Barbie. Colin Jost becomes the fourth cast member to reach 250 episodes.`,
+    pieces: [
+      { title: `Dario Amodei`, cast: `Jane Wickline`, summary: `Anthropic CEO Dario Amodei stops by Weekend Update to discuss A.I.'s threat to humanity.` },
+      { title: `Tucker Carlson`, cast: `Jeremy Culhane`, summary: `Tucker Carlson stops by Weekend Update to review summer 2026 films.` }
+    ]
+  },
+  's52e2_9': {
+    anchors: `Jost and Che cover Trump's White House ballroom drones claim and a toddler bringing a gun into daycare.`,
+    pieces: [
+      { title: `Link & GTA's Jason`, cast: `Mikey Day, Marcello Hernández`, summary: `Link and GTA's Jason stop by Weekend Update to discuss competing video game releases.` },
+      { title: `Kam Patterson on the Glee Reboot`, cast: `Kam Patterson`, summary: `Kam Patterson stops by Weekend Update to discuss the Glee reboot.` },
+      { title: `Matchmaker Debbie Mush`, cast: `Sarah Sherman`, summary: `Matchmaker Debbie Mush stops by Weekend Update to give Michael Che dating advice.` }
+    ]
+  },
+  's52e3_9': {
+    anchors: `Jost and Che cover the race to put a nuclear reactor on the moon and whether newborns possess consciousness.`,
+    pieces: [
+      { title: `Mr. Wonderful / Kevin O'Leary`, cast: `James Austin Johnson`, summary: `Mr. Wonderful / Kevin O'Leary stops by Weekend Update to discuss building an AI data center in Utah.` },
+      { title: `A Mother Whose Babysitter Cancelled`, cast: `Ashley Padilla, Grace Reiter`, summary: `A Mother Whose Babysitter Cancelled stops by Weekend Update with her daughter CoCo — Grace Reiter's first Weekend Update appearance.` }
+    ]
+  },
+  's52e4_9': {
+    anchors: `Jost and Che cover Ted Cruz on Abdul El-Sayed and a woman reporting a car crash dressed like a banana.`,
+    pieces: [
+      { title: `Pennywise`, cast: `Ben Marshall`, summary: `Pennywise stops by Weekend Update to discuss Gen Z wellness parties.` },
+      { title: `Drunk Uncle`, cast: `Bobby Moynihan, Christian Yelich, Brice Turang, Pat Murphy`, summary: `Drunk Uncle stops by Weekend Update to discuss the Brewers' 2026 World Series win, with cameos from Christian Yelich, Brice Turang and Pat Murphy.` }
+    ]
+  },
+  's52e5_9': {
+    anchors: `Jost and Che cover Stephen Miller's promotion to Chief of Staff and Wendy's thicker bacon.`,
+    pieces: [
+      { title: `Elon Musk`, cast: `Jeremy Culhane`, summary: `Elon Musk stops by Weekend Update to discuss the midterms and stock drops.` },
+      { title: `Two People Who Just Hooked Up`, cast: `Andrew Dismukes, Ashley Padilla`, summary: `Two People Who Just Hooked Up stop by Weekend Update to discuss the midterms.` }
+    ]
+  },
+  's52e6_8': {
+    anchors: `Jost and Che cover VP JD Vance being pulled from Iran peace talks.`,
+    pieces: [
+      { title: `Tommy Brennan's Thanksgiving Song`, cast: `Tommy Brennan`, summary: `Tommy Brennan performs an original Thanksgiving song about the people that made the holiday special.` }
+    ]
+  }
+};
+
+function expandEpisodeUpdates(ep) {
+  const out = [];
+  (ep.sketches || []).forEach(sk => {
+    const desk = (sk.cat === 'update') ? UPDATE_DESKS[sk.id] : null;
+    if (!desk) { out.push(sk); return; }
+    out.push(normalizeSketch({
+      ...sk,
+      title: 'Weekend Update',
+      cat: 'update',
+      cast: UPDATE_ANCHORS,
+      summary: desk.anchors || sk.summary
+    }));
+    (desk.pieces || []).forEach((p, i) => {
+      out.push(normalizeSketch({
+        id: sk.id + '_d' + (i + 1),
+        title: p.title,
+        cat: 'update',
+        cast: p.cast || '',
+        notes: '',
+        rating: '',
+        fav: false,
+        summary: p.summary || ''
+      }));
+    });
+  });
+  return { ...ep, sketches: out };
+}
+
 const STORAGE_KEY = 'snl_ranker_v3';
 const LEGACY_KEYS = ['snl_seasons_v1', 'snl52_v2', 'snl52_v1', 'snl51_v3', 'snl51_v2'];
 
@@ -3993,7 +4462,7 @@ function normalizeEpisode(ep) {
 }
 function baselineFor(seasonId) {
   const source = seasonId === '51' ? BASE_S51 : seasonId === '52' ? BASE_S52 : [];
-  return JSON.parse(JSON.stringify(source)).map(normalizeEpisode);
+  return JSON.parse(JSON.stringify(source)).map(normalizeEpisode).map(expandEpisodeUpdates);
 }
 
 let seasonEpisodes = {};
@@ -4006,6 +4475,8 @@ let listSort = 'air';
 let selectedId = null;
 let cardIndex = 0;
 let showAddForm = false;
+let armedMod = '';
+let armedCardKey = null;
 let touchStartX = 0;
 let touchDeltaX = 0;
 
@@ -4023,9 +4494,12 @@ function bindActiveSeason() {
 function mergeSketchFromSaved(baseSketch, savedSketch) {
   const out = normalizeSketch(baseSketch);
   if (!savedSketch) return out;
-  ['title', 'cat', 'cast', 'notes', 'summary'].forEach(f => {
-    if (savedSketch[f] !== undefined && savedSketch[f] !== null && savedSketch[f] !== '') out[f] = savedSketch[f];
-  });
+  // Factory fields (title, cat, summary) always come from the baseline so data
+  // fixes and the Weekend Update restructure reach existing users. User-authored
+  // data is preserved: rating, favorite, notes, and cast edits (cast for Update
+  // cards stays factory since those slots were restructured).
+  if (savedSketch.notes != null && savedSketch.notes !== '') out.notes = savedSketch.notes;
+  if (out.cat !== 'update' && savedSketch.cast != null && savedSketch.cast !== '') out.cast = savedSketch.cast;
   if (typeof savedSketch.rating === 'number') out.rating = '';
   else if (savedSketch.rating != null) out.rating = String(savedSketch.rating);
   if (typeof savedSketch.fav === 'boolean') out.fav = savedSketch.fav;
@@ -4182,7 +4656,9 @@ function selectEp(id) {
   activeEpBySeason[activeSeasonId] = id;
   selectedId = null;
   cardIndex = 0;
+  armedCardKey = null;
   showAddForm = false;
+  closeNav();
   if (currentView === 'ranked') currentView = 'list';
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === currentView));
   document.getElementById('sort-row').style.display = currentView === 'list' ? 'flex' : 'none';
@@ -4257,7 +4733,7 @@ function renderList() {
   const airOrder = ratableSketches(ep);
   const rows = list.map(s => {
     const airN = airOrder.findIndex(x => x.id === s.id) + 1;
-    return `<div class="list-row ${s.cat === 'update' ? 'is-update' : ''} ${selectedId === s.id ? 'sel' : ''}" onclick="selectSketch('${s.id}')">
+    return `<div class="list-row cat-${s.cat} ${selectedId === s.id ? 'sel' : ''}" onclick="selectSketch('${s.id}')">
       <div class="col-n">${airN}</div>
       <div><select class="grade-select ${gradeClass(s.rating)}" onclick="event.stopPropagation()" onchange="setGradeFromSelect('${ep.id}','${s.id}',this.value)">${gradeOptions(s.rating)}</select></div>
       <div class="col-title" title="${esc(s.title)}">${esc(s.title)}</div>
@@ -4310,6 +4786,8 @@ function renderCards() {
   cardIndex = Math.max(0, Math.min(list.length - 1, cardIndex));
   const s = list[cardIndex];
   selectedId = s.id;
+  if (armedCardKey !== s.id) { armedMod = parseGrade(s.rating).mod; armedCardKey = s.id; }
+  const curBase = parseGrade(s.rating).base;
   const pct = ((cardIndex + 1) / list.length) * 100;
 
   content.innerHTML = `<div class="card-stage" id="card-stage">
@@ -4319,17 +4797,24 @@ function renderCards() {
       <span class="${gradeClass(s.rating)}">${s.rating || 'UNGRADED'}</span>
     </div>
     <div class="card-frame">
-      <div class="sketch-card ${s.cat === 'update' ? 'is-update' : ''}" id="active-card">
+      <div class="sketch-card cat-${s.cat}" id="active-card">
         <div class="card-cat">${esc(CATS[s.cat] || s.cat)}</div>
         <div class="card-title">${esc(s.title)}</div>
         <div class="card-summary">${esc(s.summary) || '<span style="color:var(--faint)">No summary</span>'}</div>
         <div class="card-cast">${esc(s.cast)}</div>
         <div class="grade-pad">
-          ${GRADES.map(g => `<button type="button" class="grade-btn ${gradeClass(g)} ${s.rating === g ? 'on' : ''}" onclick="setGradeFromCard('${ep.id}','${s.id}','${g}')">${g}</button>`).join('')}
+          <div class="grade-letters">
+            ${['A','B','C','D','F'].map(L => `<button type="button" class="grade-btn g-${L.toLowerCase()} ${curBase === L ? 'on' : ''}" onclick="setGradeBase('${ep.id}','${s.id}','${L}')">${L}</button>`).join('')}
+          </div>
+          <div class="grade-mods">
+            <button type="button" class="mod-btn ${armedMod === '-' ? 'on' : ''}" onclick="armMod('-')" title="Minus">&minus;</button>
+            <button type="button" class="mod-btn ${armedMod === '+' ? 'on' : ''}" onclick="armMod('+')" title="Plus">+</button>
+            <span class="mod-hint">${s.rating ? `Grade <b>${esc(s.rating)}</b>` : (armedMod ? `armed <b>${armedMod === '-' ? '\u2212' : '+'}</b> &middot; tap a letter` : 'tap a letter &middot; +/&minus; to refine')}</span>
+            <button type="button" class="btn-ghost" onclick="setGradeFromCard('${ep.id}','${s.id}','')">Clear</button>
+          </div>
         </div>
         <div class="card-actions">
           <button type="button" class="fav-toggle ${s.fav ? 'on' : ''}" onclick="toggleFav('${ep.id}','${s.id}')" style="font-size:18px">♥ Favorite</button>
-          <button type="button" class="btn-ghost" onclick="setGradeFromCard('${ep.id}','${s.id}','')">Clear grade</button>
         </div>
         <div class="field" style="margin-top:4px">
           <label>Notes</label>
@@ -4373,7 +4858,7 @@ function renderRanked() {
   }
 
   content.innerHTML = `<div class="ranked-wrap">${all.map((s, i) => `
-    <div class="rank-row ${s.cat === 'update' ? 'is-update' : ''}">
+    <div class="rank-row cat-${s.cat}">
       <div class="rank-n ${i < 3 ? 'top' : ''}">${i + 1}</div>
       <div class="rank-grade ${gradeClass(s.rating)}">${esc(s.rating || '—')}</div>
       <div>
@@ -4400,6 +4885,32 @@ function setGradeFromSelect(epId, sId, grade) {
   saveData();
   render();
 }
+function parseGrade(g) {
+  if (!g) return { base: '', mod: '' };
+  return { base: g.charAt(0), mod: g.length > 1 ? g.charAt(1) : '' };
+}
+function armMod(sign) {
+  armedMod = (armedMod === sign) ? '' : sign;
+  armedCardKey = selectedId;
+  renderCards();
+}
+function setGradeBase(epId, sId, L) {
+  const s = getSketch(episodes.find(e => e.id === epId), sId);
+  if (!s) return;
+  const mod = (L === 'F') ? '' : armedMod;
+  const g = L + mod;
+  const same = s.rating === g;
+  s.rating = same ? '' : g;
+  saveData();
+  armedCardKey = null;
+  if (!same) {
+    const list = ratableSketches(getEp());
+    if (cardIndex < list.length - 1) cardIndex += 1;
+  }
+  render();
+}
+function toggleNav() { document.body.classList.toggle('nav-open'); }
+function closeNav() { document.body.classList.remove('nav-open'); }
 function setGradeFromCard(epId, sId, grade) {
   const s = getSketch(episodes.find(e => e.id === epId), sId);
   if (!s) return;
